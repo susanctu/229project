@@ -8,7 +8,7 @@ class TCGAData():
     """for making matrix"""
     EXPRESSION_IDX = 2
     FILE_SUFFIX = "*gene_expression_analysis.txt"
-
+    GENE_IDX = 1 
     """for making array"""
     TUMOR = 1
     NORMAL = 0
@@ -22,15 +22,32 @@ class TCGAData():
 
     def get_gene_exp_matrix(self):
         matrix = []
+        geneNames = []
+        firstPass = True 
         for filename in sorted(glob.glob(TCGAData.FILE_SUFFIX)):#
+#            print(filename)
             file = open(filename,'r')
             perPersonCol = []#gene expression data for 1 person, should be in same order as in original files from Dill 
+            lineNum = -1
             for line in file:
+ #               print(line)
+                if lineNum==-1:
+                    lineNum = lineNum +1
+                    continue
                 line = line.rstrip('\n')
                 lineParts = line.split('\t')   
                 perPersonCol.append(lineParts[TCGAData.EXPRESSION_IDX])
+                if firstPass:
+                    geneNames.append(lineParts[TCGAData.GENE_IDX])
+                else:
+  #                  print("not first file")
+   #                 print(geneNames[lineNum])
+    #                print(lineParts[TCGAData.GENE_IDX])
+                    assert(geneNames[lineNum]==lineParts[TCGAData.GENE_IDX])
+                lineNum = lineNum + 1
             matrix.append(perPersonCol)
             file.close()
+            firstPass = False
         return matrix
 
     def get_labels(self): #as a list/array
@@ -61,25 +78,26 @@ def testCode():
         gene_exp = data.get_gene_exp_matrix()
         labels = data.get_labels()
         length = len(gene_exp[0])
-        print(length)
+        #print(length)
         for person_exp in gene_exp:
             if len(person_exp)!=length:
                 print(len(person_exp))
             assert(len(person_exp)==length)
-        print(len(labels))
-        print(len(gene_exp))
+        #print(len(labels))
+        #print(len(gene_exp))
         assert(len(labels)==len(gene_exp))
         index = data.get_index('TCGA-E2-A1BD-01A-11R-A12P-07')        
-        print(gene_exp[index])
-        print(labels[index])
-        #index = data.get_index('TCGA-E2-A15E-01A-11R-A12D-07')        
+        #print(gene_exp[index])
+        #print(labels[index])
+        index = data.get_index('TCGA-E2-A15E-01A-11R-A12D-07')        
         #print(gene_exp[index])
         #print(labels[index])
         index = data.get_index('TCGA-BH-A0DP-11A-12R-A089-07')        
-        print(gene_exp[index])
-        print(labels[index])
+        #print(gene_exp[index])
+        #print(labels[index])
 
         print(labels)
+        print(len(labels))
 
 
 if __name__=="__main__":

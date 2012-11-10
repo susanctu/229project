@@ -80,7 +80,3 @@ def testCode():
         print(labels[index])
 
         print(labels)
-
-
-if __name__=="__main__":
-    testCode()

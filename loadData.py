@@ -1,7 +1,7 @@
 from string import *
 import glob
 import os
-from scikits.learn import preprocessing
+from sklearn import preprocessing
 import numpy
 os.chdir("../projectFiles/")
 
@@ -27,6 +27,7 @@ class TCGAData():
             return 0
         else:
             return 1
+
     def get_gene_exp_matrix(self):
         expMatrix = []
         genesMissingData = [0]*17814

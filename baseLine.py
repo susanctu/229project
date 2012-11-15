@@ -21,7 +21,7 @@ def evaluateClassifications(predicted,testLabels):
 	tp = 0.0
 	tn = 0.0
 	
-	for i in range(1,len(predicted)):
+	for i in range(0,len(predicted)):
 		if predicted[i]==testLabels[i] and predicted[i]: tp+=1
 		elif predicted[i]==testLabels[i] and not predicted[i]: tn+=1
 		elif predicted[i]!=testLabels[i] and predicted[i]: fp+=1

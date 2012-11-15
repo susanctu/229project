@@ -1,7 +1,7 @@
 from string import *
 import glob
 import os
-from scikits.learn import preprocessing
+from sklearn import preprocessing
 import numpy
 os.chdir("../projectFiles/")
 

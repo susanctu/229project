@@ -1,11 +1,13 @@
 from loadData import *
 from sklearn import svm
 from sklearn import cross_validation
+from sklearn.feature_selection import SelectKBest
+from sklearn.feature_selection import chi2
 
 #can be used both with all features, and a selected set of features (data is expected only to contain those)
 def learnWithSVM(trainingData,trainingLabels,testData,testLabels,numFeatures):
 	clf = svm.SVC(gamma=0.001,C=100.) #these are the values in some random example, idk what C is
-#later set these using cross validation?
+#TODO later set these using cross validation?
 	clf.fit(trainingData,trainingLabels)
 	predicted = clf.predict(testData)
 	return evaluateClassifications(predicted,testLabels)
@@ -31,6 +33,7 @@ def evaluateClassifications(predicted,testLabels):
 	return ((tp+tn)/(len(predicted)))
 
 if __name__=="__main__":
+	basicFeatureSelection = True #Uses all features if false, forward feature selection using chi2 if true
 	"""
 	#just checking
 	X_train = [[1,0,-1],[0,1,-1]]
@@ -43,10 +46,22 @@ if __name__=="__main__":
 	#testCode()
 	"""
         data = TCGAData()
-        X = data.get_gene_exp_matrix()
-        numFeatures = len(X[0])
-	numExamples = len(X)
-        Y = data.get_labels()
+	if basicFeatureSelection:
+        	X = data.get_gene_exp_matrix()
+        	numFeatures = len(X[0])
+		numExamples = len(X)
+        	Y = data.get_labels()
+		fs = SelectKBest(chi2)
+		fs.fit(X,Y)
+		print fs.get_support() #I think this gives you a bit mask of which features you want
+		#TODO continue here
+		
+	else:
+        	X = data.get_gene_exp_matrix()
+        	numFeatures = len(X[0])
+		numExamples = len(X)
+        	Y = data.get_labels()
+
 	print "X has %d examples, y has %d labels" % (numExamples,len(Y))
 
 	kf = cross_validation.KFold(numExamples, k=2,shuffle=True) #TODO vary k

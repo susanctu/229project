@@ -54,7 +54,7 @@ class TCGAData():
         #genesMissingData[0]=self._nonzero(genesMissingData[0])
         #numGenesAlwaysPresent = reduce(lambda x, y: x+self._nonzero(y), genesMissingData)
         #print(numGenesAlwaysPresent)
-        return preprocessing.scale(numpy.matrix(expMatrix),axis=1)
+        return preprocessing.scale(numpy.array(expMatrix),axis=1)
 
     def get_labels(self): #as a list/array
         barcodeToLabels = {} #dict from barcode to label FIXME:do we want to keep track of this?
@@ -74,7 +74,7 @@ class TCGAData():
             labelList.append(barcodeToLabels[barcode])
             self.barcodeToIdx[barcode]=index
             index = index + 1
-        return labelList
+        return numpy.array(labelList)
     
     def get_index(self,barcode):#FIXME: this only works if get_labels was called first
         return self.barcodeToIdx[barcode]
@@ -89,10 +89,11 @@ def testCode():
             if len(person_exp)!=length:
                 print(len(person_exp))
             assert(len(person_exp)==length)
-        #print(len(labels))
+        print(len(labels))
         assert(len(labels)==len(gene_exp))
         index = data.get_index('TCGA-E2-A1BD-01A-11R-A12P-07')
         print(gene_exp[index])
+        print(len(gene_exp[index]))
         #print(labels[index])
         #index = data.get_index('TCGA-E2-A15E-01A-11R-A12D-07')
         #print(gene_exp[index])

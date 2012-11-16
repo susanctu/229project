@@ -22,7 +22,7 @@ def kFoldCrossValid(X,Y,learningAlgo,k=2):#learningAlgo is an object, not a func
 	    	X_train, X_test = [X[i] for i in train_index], [X[i] for i in test_index]
 	    	y_train, y_test = [Y[i] for i in train_index], [Y[i] for i in test_index]
 		#print "Xtrain has %d examples, ytrain has %d labels" % (len(X_train),len(y_train))
-		#print learningAlgo.fit(X_train,y_train)
+		learningAlgo.fit(X_train,y_train)
                 predictions = []
                 for x_vec in X_test:
                     predictions.append(learningAlgo.predict(x_vec)[0])

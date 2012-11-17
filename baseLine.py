@@ -3,6 +3,7 @@ from sklearn import svm
 from sklearn import cross_validation
 from sklearn.feature_selection import SelectKBest
 from sklearn.feature_selection import chi2
+from testUtils import evaluateClassifications
 
 #can be used both with all features, and a selected set of features (data is expected only to contain those)
 def learnWithSVM(trainingData,trainingLabels,testData,testLabels,numFeatures):
@@ -10,7 +11,7 @@ def learnWithSVM(trainingData,trainingLabels,testData,testLabels,numFeatures):
 #TODO later set these using cross validation?
 	clf.fit(trainingData,trainingLabels)
 	predicted = clf.predict(testData)
-	return evaluateClassifications(predicted,testLabels)
+	return evaluateClassifications(predicted,testLabels)[0]
 	
 if __name__=="__main__":
 	basicFeatureSelection = True #Uses all features if false, forward feature selection using chi2 if true
@@ -28,7 +29,7 @@ if __name__=="__main__":
         data = TCGAData()
 	if basicFeatureSelection:
         	X = data.get_gene_exp_matrix()
-        	numFeatures = len(X[0])
+                numFeatures = len(X[0])
 		numExamples = len(X)
         	Y = data.get_labels()
 		fs = SelectKBest(chi2)

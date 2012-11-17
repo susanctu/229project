@@ -1,0 +1,49 @@
+SVM with Select 20 best (forward selection) using chi2 measure
+
+NOTE: using ALL data samples to select features, then train on half test on half to get results below
+BUT it might be that these features work especially well on our dataset (better than on another dataset drawn from the same distribution) so that these numbers OVERESTIMATE the predictive power of our model
+
+genes: ['BCL2L1' 'CAPN9' 'CD47' 'CUGBP1' 'D15Wsu75e' 'GMEB2' 'HIST1H2BD'
+ 'HIST1H2BH' 'KCNA2' 'KCNIP2' 'KLHL3' 'KRT37' 'LRRC3B' 'LRRIQ2' 'MEOX2'
+ 'NUAK2' 'RAB26' 'SLC35A5' 'SLC35F3' 'SYPL1']
+
+
+fp = false positives etc
+
+Doing 2 fold cross validation:
+
+fp: 3.000000
+fn: 2.000000
+tp: 266.000000
+tn: 28.000000
+
+accuracy: 0.9832775919732442
+---------------
+
+fp: 2.000000
+fn: 2.000000
+tp: 263.000000
+tn: 33.000000
+accuracy:  0.9866666666666667
+
+
+SVM with all genes
+
+Doing 2 fold cross validation:
+
+fp: 38.000000
+fn: 0.000000
+tp: 261.000000
+tn: 0.000000
+
+accuracy: 0.8729096989966555
+-----------------
+
+fp: 26.000000
+fn: 0.000000
+tp: 272.000000
+tn: 2.000000
+accuracy: 
+0.9133333333333333
+
+

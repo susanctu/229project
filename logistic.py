@@ -1,30 +1,19 @@
 import numpy as np
 from loadData import TCGAData
 from sklearn.linear_model import LogisticRegression
-from testUtils import kFoldCrossValid
+from testUtils import kFoldCrossValid, print_genes_nonzero_coeff
 
-def print_genes_nonzero_coeff(data,coeffs):#data should be a TCGAData object
-    names = data.get_gene_names() 
-    print(len(coeffs))
-    print(len(names))
-    assert(len(coeffs)==len(names))
-    nonzeroNames = []
-    for i in range(0,len(names)):
-        if coeffs[i]!=0:
-            nonzeroNames.append(names[i])
-    return nonzeroNames
-
-def with_l1_penalty(data):#data should be TCGAData object
+def with_l1_penalty(data,C_list):#data should be TCGAData object
     X = data.get_gene_exp_matrix()
     y = data.get_labels()
 
-    """Adapted from 
+    """Adapted from sklearn website,  
         # Authors: Alexandre Gramfort <alexandre.gramfort@inria.fr>
         #          Mathieu Blondel <mathieu@mblondel.org>
         #          Andreas Mueller <amueller@ais.uni-bonn.de>
         # License: BSD Style.
     """
-    for i, C in enumerate(10 ** np.arange(0,1)):
+    for C in C_list:
             l1_logReg = LogisticRegression(C=C, penalty='l1', tol=0.01)
             l2_logReg = LogisticRegression(C=C, penalty='l2', tol=0.01)
             l1_logReg.fit(X, y)
@@ -58,7 +47,7 @@ def ordinary_logistic(X,y):
 def main():
     """Try an ordinary logistic regression first"""
     data = TCGAData()
-    with_l1_penalty(data)    
+    with_l1_penalty(data,[0.1,0.5])    
 
 if __name__=="__main__":
     main()

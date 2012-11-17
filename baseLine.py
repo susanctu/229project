@@ -1,8 +1,40 @@
-from loadData import *
 from sklearn import svm
 from sklearn import cross_validation
 from sklearn.feature_selection import SelectKBest
 from sklearn.feature_selection import chi2
+from loadData import TCGAData
+from testUtils import kFoldCrossValid
+import numpy
+
+#TODO DOING FEATURE SELECTION ON ALL DATA, SO RESULTING ACCURACY DOES NOT REFLECT REAL PREDICTION POWER
+
+def svmfn(featureSelectionMethod = 'none'):
+    data = TCGAData()
+    gene_exp = data.get_gene_exp_matrix()
+    labels = data.get_labels()
+    
+    clf = svm.SVC(gamma=0.001,C=100.) #these are the values in some random example, idk what C is
+    if(featureSelectionMethod=='none'):
+	X = gene_exp
+	Y = labels
+    elif featureSelectionMethod=='chi2':
+        numFeatures = len(gene_exp[0])
+	numExamples = len(labels)
+	fs = SelectKBest(chi2)
+	fs.fit(gene_exp,labels)
+	indices =  fs.get_support() #I think this gives you a bit mask of which features you want
+	names =numpy.array(data.get_gene_names())
+	print type(names)
+	#selectedGeneNames = [names[i] for i in indices] 
+	print names[indices]
+	X = gene_exp[:,indices]
+	Y = labels
+    else:
+	X = gene_exp
+	Y = labels
+    accuracy = kFoldCrossValid(X,Y,clf)     
+    print(accuracy)
+
 
 #can be used both with all features, and a selected set of features (data is expected only to contain those)
 def learnWithSVM(trainingData,trainingLabels,testData,testLabels,numFeatures):
@@ -13,8 +45,9 @@ def learnWithSVM(trainingData,trainingLabels,testData,testLabels,numFeatures):
 	return evaluateClassifications(predicted,testLabels)
 	
 if __name__=="__main__":
-	basicFeatureSelection = True #Uses all features if false, forward feature selection using chi2 if true
+	svmfn('chi2')
 	"""
+	basicFeatureSelection = True #Uses all features if false, forward feature selection using chi2 if true
 	#just checking
 	X_train = [[1,0,-1],[0,1,-1]]
 	y_train = [1,0]
@@ -24,7 +57,6 @@ if __name__=="__main__":
 	
 	print learnWithSVM(X_train,y_train,X_test,y_test,numFeatures)
 	#testCode()
-	"""
         data = TCGAData()
 	if basicFeatureSelection:
         	X = data.get_gene_exp_matrix()
@@ -54,3 +86,4 @@ if __name__=="__main__":
 		
 		print learnWithSVM(X_train,y_train,X_test,y_test,numFeatures)
 
+	"""

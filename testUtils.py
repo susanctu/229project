@@ -2,6 +2,16 @@ from sklearn import cross_validation
 
 """This file contains useful functions for testing/evaluating different learning algorithms"""
 
+def print_genes_nonzero_coeff(data,coeffs):#data should be a TCGAData object
+    names = data.get_gene_names()
+    print(len(coeffs))
+    print(len(names))
+    assert(len(coeffs)==len(names))
+    nonzeroNames = []
+    for i in range(0,len(names)):
+        if coeffs[i]!=0:
+            nonzeroNames.append(names[i])
+    return nonzeroNames
 
 def kFoldCrossValid(X,Y,learningAlgo,k=2):#learningAlgo is an object, not a function! and assumes that X and Y are already numpy.arrays 
 
@@ -29,8 +39,11 @@ def kFoldCrossValid(X,Y,learningAlgo,k=2):#learningAlgo is an object, not a func
                 accuracy.append(evaluateClassifications(predictions,y_test))
         return(accuracy)
 
-#now just reports accuracy,TODO maybe precision + recall?
 def evaluateClassifications(predicted,testLabels):
+        """Returns a list [accuracy,precision,recall, fp, fn, tp, tn]
+           Yes, it would be nicer if I made an object with these attributes.
+           Complain to me if you want me to change it to that. 
+        """
 	numWrong = 0.0
 	numRight = 0.0
 	fp = 0.0
@@ -43,8 +56,11 @@ def evaluateClassifications(predicted,testLabels):
 		elif predicted[i]==testLabels[i] and not predicted[i]: tn+=1
 		elif predicted[i]!=testLabels[i] and predicted[i]: fp+=1
 		else: fn+=1
-	print 'fp: %f' % fp
-	print 'fn: %f' % fn
-	print 'tp: %f' % tp
-	print 'tn: %f' % tn
-	return ((tp+tn)/(len(predicted)))
+	#print 'fp: %f' % fp
+	#print 'fn: %f' % fn
+	#print 'tp: %f' % tp
+	#print 'tn: %f' % tn 
+	accuracy = ((tp+tn)/(len(predicted)))
+        precision = tp/(fp+tp) 
+        recall = tp/(fp+fn)
+        return([accuracy,precision,recall,fp,fn,tp,tn])

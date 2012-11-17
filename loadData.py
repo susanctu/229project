@@ -5,6 +5,21 @@ from sklearn import preprocessing
 import numpy
 os.chdir("../projectFiles/")
 
+class geneSignatures():
+
+    def __init__(self):
+        self.sourceToGenes = {}
+        self._populateDict()
+
+    def _populateDict(self):
+        pass #FIXME:read in the file and populate sourceToGenes appropriately
+
+    def get_genes(self):
+        return self.sourceToGenes
+    
+    def get_gene(self,source):
+        return self.sourceToGenes[source]        
+
 class TCGAData():
 
     """for making matrix"""

@@ -17,10 +17,12 @@ class TCGAData():
     BARCODE_IDX =1
     SAMPLE_TYPE_IDX=6
 
-    """normalize gene expression numbers"""
-
+    """for getting gene names"""
+    GENE_NAME_IDX = 1
+ 
     def __init__(self):
         self.barcodeToIdx = {}
+        self.geneNames=[] #should be in same order as in original files from Dill
 
     def _nonzero(self, num):
         if num == 0: 
@@ -28,11 +30,27 @@ class TCGAData():
         else:
             return 1
 
+    def get_gene_names(self):
+        if not self.geneNames: #if empty
+            filename = glob.glob(TCGAData.FILE_SUFFIX)[0] #get any of the files in the glob FIXME: make this more efficient?   
+            print(filename)
+            file = open(filename,'r')
+            lineNum = -1
+            for line in file:    
+                if lineNum == -1:
+                    lineNum = lineNum +1
+                    continue
+                line = line.rstrip('\n')
+                lineParts = line.split('\t')
+                self.geneNames.append(lineParts[TCGAData.GENE_NAME_IDX])
+                lineNum = lineNum + 1
+            file.close()
+        return self.geneNames
+    
     def get_gene_exp_matrix(self):
         expMatrix = []
         genesMissingData = [0]*17814
         for filename in sorted(glob.glob(TCGAData.FILE_SUFFIX)):#
-           # missingData = False
             file = open(filename,'r')
             perPersonCol = []#gene expression data for 1 person, should be in same order as in original files from Dill
             lineNum = -1
@@ -45,17 +63,12 @@ class TCGAData():
                 if (lineParts[TCGAData.EXPRESSION_IDX]=="null"):
                     genesMissingData[lineNum] = genesMissingData[lineNum] + 1
                     perPersonCol.append(0.0)
-            #       print(line)
                 else:
                     perPersonCol.append(float(lineParts[TCGAData.EXPRESSION_IDX]))
                 lineNum = lineNum +1
             expMatrix.append(perPersonCol)
             file.close()
-        #print(genesMissingData)
-        #genesMissingData[0]=self._nonzero(genesMissingData[0])
-        #numGenesAlwaysPresent = reduce(lambda x, y: x+self._nonzero(y), genesMissingData)
-        #print(numGenesAlwaysPresent)
-        return preprocessing.scale(numpy.array(expMatrix),axis=1)
+        return preprocessing.scale(numpy.array(expMatrix),axis=1) #normalize
 
     def get_labels(self): #as a list/array
         barcodeToLabels = {} #dict from barcode to label FIXME:do we want to keep track of this?

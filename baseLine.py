@@ -20,7 +20,7 @@ def svmfn(featureSelectionMethod = 'none'):
     elif featureSelectionMethod=='chi2':
         numFeatures = len(gene_exp[0])
 	numExamples = len(labels)
-	fs = SelectKBest(chi2)
+	fs = SelectKBest(chi2,k=20)
 	fs.fit(gene_exp,labels)
 	indices =  fs.get_support() #I think this gives you a bit mask of which features you want
 	names =numpy.array(data.get_gene_names())
@@ -45,6 +45,7 @@ def learnWithSVM(trainingData,trainingLabels,testData,testLabels,numFeatures):
 	return evaluateClassifications(predicted,testLabels)
 	
 if __name__=="__main__":
+	svmfn()
 	svmfn('chi2')
 	"""
 	basicFeatureSelection = True #Uses all features if false, forward feature selection using chi2 if true

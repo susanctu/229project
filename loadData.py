@@ -29,7 +29,7 @@ class TCGAData():
             return 0
         else:
             return 1
-
+    # gives a list of strings, each of which is the name of a gene
     def get_gene_names(self):
         if not self.geneNames: #if empty
             filename = glob.glob(TCGAData.FILE_SUFFIX)[0] #get any of the files in the glob FIXME: make this more efficient?   

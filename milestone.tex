@@ -21,7 +21,7 @@
 \date{\today}
 \documentclass[11pt]{article}
 %\documentclass{acmconf}
-
+\usepackage[pdftex]{graphicx}
 \usepackage[paper=a4paper,dvips,top=1.5cm,left=1.5cm,right=1.5cm,
     foot=1cm,bottom=1.5cm]{geometry}
 %----------------------------------------------------------
@@ -38,12 +38,20 @@ Statistical or machine learning methods have been used to find cancer gene signa
 \section{Methods}
 
 
-\section{Discussion}
+\section{Results \& Discussion}
 
-\paragraph{Forward Selection}
-\paragraph{Backwards Selection}
-\paragraph{Logistic Regression}
+\subsection{Forward Selection}
+\subsection{Backwards Selection}
+\subsection{Logistic Regression}
 
+\begin{figure}[h!]
+  \centering
+    \includegraphics[scale=0.5]{sparselog.png}
+  \caption{Results of logistic regression with regularization.}
+\label{fig:sparselog}
+\end{figure}
+%will not be including huge lists of genes in the final doc, but since we haven't evaluated these lists yet, just putting them here as what-we-have-so-far
+The precision and recall for a logistic regression with no regularization were 0.9945255474452555 and 0.996267825311943. As can be seen in Figure \ref{fig:sparselog}, C=0.01 provides reasonable precision/recall while still providing a reasonably small number of selected features. The genes selected when C=0.01 are $[$'ADAMDEC1', 'ANGPTL7', 'AREG', 'ASPN', 'C20orf103', 'C20orf54', 'CA4', 'CAMP', 'CCL11', 'COL10A1', 'COL11A1', 'COL1A1', 'COMP', 'CST1', 'CTHRC1', 'CXCL11', 'CXCL2', 'DLK1', 'FABP7', 'FAM111B', 'FAM19A4', 'FGB', 'FGFBP1', 'FHL1', 'FLJ35773', 'FLJ45557', 'GDF10', 'GGTA1', 'GJB2', 'GLRA3', 'GPC3', 'GPR84', 'GSTA2', 'HMGCLL1', 'IGFBP1', 'IGSF10', 'INHBA', 'KIAA1576', 'KIF2C', 'KLRC3', 'LOC152573', 'LOC55908', 'LRRC3B', 'MAOA', 'MKI67', 'MMP10', 'MMP11', 'MMP13', 'MMP3', 'MMP9', 'MUCL1', 'MYEOV', 'MYPN', 'NLGN1', 'NR0B1', 'NUF2', 'OCA2', 'PCK1', 'PCOLCE2', 'PPAPDC1A', 'PPEF1', 'PTPRZ1', 'PTX3', 'RBP4', 'S100B', 'SFRP2', 'SPINK5', 'SSTR1', 'SYT13', 'TFPI2', 'TSLP', 'VCX2', 'WISP1', 'ZBED2'$]$.
 \begin{thebibliography}{9}
 
 \bibitem{venet}

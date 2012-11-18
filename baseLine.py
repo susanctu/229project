@@ -13,27 +13,9 @@ def svmfn(featureSelectionMethod = 'none'):
     data = TCGAData()
     gene_exp = data.get_gene_exp_matrix()
     labels = data.get_labels()
-    
+    names = data.get_gene_names()
     clf = svm.SVC(gamma=0.001,C=100.) #these are the values in some random example, idk what C is
-    if(featureSelectionMethod=='none'):
-	X = gene_exp
-	Y = labels
-    elif featureSelectionMethod=='chi2':
-        numFeatures = len(gene_exp[0])
-	numExamples = len(labels)
-	fs = SelectKBest(chi2,k=20)
-	fs.fit(gene_exp,labels)
-	indices =  fs.get_support() #I think this gives you a bit mask of which features you want
-	names =numpy.array(data.get_gene_names())
-	print type(names)
-	#selectedGeneNames = [names[i] for i in indices] 
-	print names[indices]
-	X = gene_exp[:,indices]
-	Y = labels
-    else:
-	X = gene_exp
-	Y = labels
-    accuracy = kFoldCrossValid(X,Y,clf)     
+    accuracy = kFoldCrossValid(gene_exp,labels,clf,k=4,names=names,selection=featureSelectionMethod)     
     print(accuracy)
 
 
@@ -46,7 +28,7 @@ def learnWithSVM(trainingData,trainingLabels,testData,testLabels,numFeatures):
 	return evaluateClassifications(predicted,testLabels)[0]
 	
 if __name__=="__main__":
-	svmfn()
+	#svmfn()
 	svmfn('chi2')
 	"""
 	basicFeatureSelection = True #Uses all features if false, forward feature selection using chi2 if true

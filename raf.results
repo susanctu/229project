@@ -47,3 +47,35 @@ accuracy:
 0.9133333333333333
 
 
+4 FOLD cross validation with feature selection ONLY on training set (to solve problem described at top)
+
+['BSN' 'C1QTNF6' 'CCDC69' 'CEP290' 'DIRAS2' 'F12' 'KCNA2' 'KLF5' 'MCCC1'
+ 'PCSK6' 'PID1' 'PNLIPRP2' 'RBAK' 'RGS19' 'S100A1' 'ST7' 'UBIAD1' 'USP31'
+ 'ZNF517' 'ZNF669']
+[0.9932885906040269, 0.9921875, 127.0, 1.0, 0.0, 127.0, 21.0]
+----------------------------------
+
+['ABCB5' 'BTBD2' 'C19orf22' 'CACNA2D1' 'CD47' 'CLIP4' 'DMRT2' 'GLRX2'
+ 'HSP90AA1' 'KRT37' 'LOC123688' 'LRRC3B' 'M-RIP' 'SNX7' 'SOD3' 'SOSTDC1'
+ 'TBC1D13' 'TGFBR3' 'UBE1' 'WBSCR28']
+[0.9798657718120806, 0.9776119402985075, 43.666666666666664, 3.0, 0.0,
+131.0, 15.0]
+----------------------------------
+
+['ANXA3' 'CD47' 'CDKL3' 'CHD6' 'CLIP4' 'CMTM7' 'FAM3B' 'HOXC13' 'KLHL3'
+ 'KLRG2' 'KRT37' 'MYT1' 'PID1' 'PIGX' 'RAB26' 'RBBP9' 'SEZ6L2' 'SF3B4'
+ 'STX3' 'TRAF3']
+[0.9731543624161074, 0.9784172661870504, 34.0, 3.0, 1.0, 136.0, 9.0]
+----------------------------------
+
+['ABCB5' 'ANKRD2' 'ANXA3' 'C1orf77' 'CLCN7' 'CUGBP2' 'G0S2' 'GABARAPL1'
+ 'HN1' 'KRT16' 'LIPT1' 'LOC541469' 'LRRC3B' 'MIB1' 'MRPS34' 'MYT1' 'SAT2'
+ 'SGK269' 'SLC25A10' 'TMEM37']
+[0.993421052631579, 1.0, 137.0, 0.0, 1.0, 137.0, 14.0]
+
+where the [] contain accuracy, precision, recall, fp, fn, tp, tn
+
+NOTE: these gene exp data are very inconsistent!
+
+'MYT1', 'PID1', 'ABCB5', 'CD47', 'CLIP4',  occur twice, ALL OTHERS just once...
+

@@ -28,7 +28,7 @@ def learnWithSVM(trainingData,trainingLabels,testData,testLabels,numFeatures):
 	return evaluateClassifications(predicted,testLabels)[0]
 	
 if __name__=="__main__":
-	svmfn()
+	#svmfn()
 	svmfn('chi2')
 	"""
 	basicFeatureSelection = True #Uses all features if false, forward feature selection using chi2 if true

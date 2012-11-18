@@ -39,8 +39,8 @@ def kFoldCrossValid(X,Y,learningAlgo,k=2,names=None,selection='none'):#learningA
     		if(selection=='chi2'):
 			numFeatures = len(X_train[0])
 			numExamples = len(y_train)
-			fs = SelectKBest(chi2,k=20)
-			fs.fit(X_train,y_train)
+			fs = SelectKBest(chi2,k=50)
+			fs.fit(numpy.array(X_train)*1000,y_train)
 			indices =  fs.get_support() #I think this gives you a bit mask of which features you want
 			names =numpy.array(names)
 			print names[indices]
@@ -76,7 +76,13 @@ def evaluateClassifications(predicted,testLabels):
 	#print 'fn: %f' % fn
 	#print 'tp: %f' % tp
 	#print 'tn: %f' % tn 
-	accuracy = ((tp+tn)/(len(predicted)))
-        precision = tp/(fp+tp) 
-        recall = tp/(fp+fn)
+	if fp+tp==0:
+		precision = float("inf")
+	else:
+		precision = tp/(fp+tp)
+	if tp+fn==0:
+		recall = float("inf")
+	else:
+		recall = tp/(tp+fn)
+        accuracy = ((tp+tn)/(len(predicted)))
         return([accuracy,precision,recall,fp,fn,tp,tn])

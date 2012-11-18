@@ -4,8 +4,6 @@ from sklearn import cross_validation
 
 def print_genes_nonzero_coeff(data,coeffs):#data should be a TCGAData object
     names = data.get_gene_names()
-    print(len(coeffs))
-    print(len(names))
     assert(len(coeffs)==len(names))
     nonzeroNames = []
     for i in range(0,len(names)):
@@ -13,7 +11,8 @@ def print_genes_nonzero_coeff(data,coeffs):#data should be a TCGAData object
             nonzeroNames.append(names[i])
     return nonzeroNames
 
-def kFoldCrossValid(X,Y,learningAlgo,k=2):#learningAlgo is an object, not a function! and assumes that X and Y are already numpy.arrays 
+
+def kFoldCrossValid(X,Y,learningAlgo,k=4):#learningAlgo is an object, not a function! and assumes that X and Y are already numpy.arrays 
 
         """
         Expects matrix with feature vectors, labels, a learning algorithm, and (optionally) k.
@@ -61,6 +60,12 @@ def evaluateClassifications(predicted,testLabels):
 	#print 'tp: %f' % tp
 	#print 'tn: %f' % tn 
 	accuracy = ((tp+tn)/(len(predicted)))
-        precision = tp/(fp+tp) 
-        recall = tp/(fp+fn)
+        if fp+tp==0:
+            precision = float("inf")
+        else:
+            precision = tp/(fp+tp) 
+        if tp+fn==0:
+            recall = float("inf") 
+        else:
+            recall = tp/(tp+fn)
         return([accuracy,precision,recall,fp,fn,tp,tn])

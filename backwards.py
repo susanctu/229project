@@ -18,7 +18,7 @@ def rec_feature_elim(data,num_features=20):
 def rec_feature_elim_with_KFold(data):
     """Recursive feature elimination 
     FIXME: How to pick a kernel?
-    WARNING: ridiculously slow
+    WARNING: ridiculously slow?
     """
     X = data.get_gene_exp_matrix()
     y = data.get_labels()

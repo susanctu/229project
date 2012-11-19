@@ -84,10 +84,22 @@ average recall: 1.0\\
 \end{figure}
 
 %will not be including huge lists of genes in the final doc, but since we haven't evaluated these lists yet, just putting them here as what-we-have-so-far
-The precision and recall for a logistic regression with no regularization were 0.9945255474452555 and 0.996267825311943. As can be seen in Figure \ref{fig:sparselog}, C=0.01 provides reasonable precision/recall while still providing a reasonably small number of selected features. The genes selected when C=0.01 when training on a random 3-quarters of our dataset were $[$'ACVR1C', 'ADAMDEC1', 'ADH4', 'AKR1C1', 'AMIGO2', 'ANKRD22', 'ANLN', 'AREG', 'ASPA', 'ASPN', 'BUB1', 'C6orf156', 'CA4', 'CEACAM6', 'CEP55', 'CES1', 'CITED1', 'COL10A1', 'COL11A1', 'CST1', 'CXCL11', 'CXCL2', 'CXCL3', 'DAZ4', 'FABP1', 'FAM111B', 'FAM3B', 'FLJ35773', 'FLJ45557', 'GGTA1', 'GJB2', 'GSTA2', 'HEMGN', 'HLA-DPB1', 'HMGCLL1', 'IGSF10', 'INHBA', 'JAKMIP1', 'KIF14', 'LRRC3B', 'MMP1', 'MMP11', 'MMP13', 'MMP3', 'MUCL1', 'NPNT', 'NPY2R', 'OCA2', 'PDK4', 'PPAPDC1A', 'PTPRR', 'S100B', 'S100P', 'SDPR', 'SEMA3A', 'SFRP1', 'SNCA', 'SULT2A1', 'SYT13', 'TDO2', 'TFPI2', 'TNMD', 'TSLP', 'USP44', 'VCX3A', 'WISP1'$]$.
+The precision and recall for a logistic regression with no regularization were 0.995 and 0.996. As can be seen in Figure \ref{fig:sparselog}, C=0.01 provides reasonable precision/recall while still providing a reasonably small number of selected features. The genes selected when C=0.01 when training on a random 3-quarters of our dataset were $[$'ACVR1C', 'ADAMDEC1', 'ADH4', 'AKR1C1', 'AMIGO2', 'ANKRD22', 'ANLN', 'AREG', 'ASPA', 'ASPN', 'BUB1', 'C6orf156', 'CA4', 'CEACAM6', 'CEP55', 'CES1', 'CITED1', 'COL10A1', 'COL11A1', 'CST1', 'CXCL11', 'CXCL2', 'CXCL3', 'DAZ4', 'FABP1', 'FAM111B', 'FAM3B', 'FLJ35773', 'FLJ45557', 'GGTA1', 'GJB2', 'GSTA2', 'HEMGN', 'HLA-DPB1', 'HMGCLL1', 'IGSF10', 'INHBA', 'JAKMIP1', 'KIF14', 'LRRC3B', 'MMP1', 'MMP11', 'MMP13', 'MMP3', 'MUCL1', 'NPNT', 'NPY2R', 'OCA2', 'PDK4', 'PPAPDC1A', 'PTPRR', 'S100B', 'S100P', 'SDPR', 'SEMA3A', 'SFRP1', 'SNCA', 'SULT2A1', 'SYT13', 'TDO2', 'TFPI2', 'TNMD', 'TSLP', 'USP44', 'VCX3A', 'WISP1'$]$.
 
-Taking the intersection of all the gene lists generated during cross-validation, we found that the genes that appear in all four of these lists are $[$'COL10A1', 'AREG', 'WISP1', 'COL11A1', 'TNMD', 'GJB2', 'PPAPDC1A', 'CA4', 'SYT13', 'SFRP1', 'TFPI2', 'FAM111B', 'MMP3', 'MMP11'$]$.
+Taking the intersection of all the gene lists generated during cross-validation, we found that the genes that appear in all four of these lists are $[$'COL10A1', 'AREG', 'WISP1', 'COL11A1', 'TNMD', 'GJB2', 'PPAPDC1A', 'CA4', 'SYT13', 'SFRP1', 'TFPI2', 'FAM111B', 'MMP3', 'MMP11'$]$. However, it is worrying that there is so little overlap with the gene lists obtained from forward selection.
 
+\subsection{Random Subsets}
+
+However, we find that we can achieve near-perfect precision/recall with random subsets as well. The following numbers are from 4-fold cross-validationwith random subsets of 50 genes:
+\begin{tabular}{ l | c }
+    Precision & Recall\\
+  \hline 
+    1.0 & 1.0 \\
+    0.993 & 0.971 \\
+    0.992 & 0.985 \\
+    0.985 & 1.0 \\
+  \hline
+\end{tabular}
 \section{Conclusion}
 From these preliminary results, we conclude that while distinguishing between normal and cancerous tissue is easy to do, finding a gene signature in which the genes are actually related to cancer pathology is difficult because In fact, we saw that a random subset of 50 genes can provide good predictive power. We plan to consult the literature and Professor Dill for advice on how to proceed. 
 

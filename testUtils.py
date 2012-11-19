@@ -38,7 +38,8 @@ def kFoldCrossValid(X,Y,learningAlgo,k=4,names=None,selection='none'):#learningA
 			numFeatures = len(X_train[0])
 			numExamples = len(y_train)
 			fs = SelectKBest(chi2,k=50)
-			fs.fit(numpy.array(X_train)*1000,y_train)
+			#fs.fit(numpy.array(X_train)*1000,y_train)
+			fs.fit(numpy.array(X)*1000,Y)
 			indices =  fs.get_support() #I think this gives you a bit mask of which features you want
 			names =numpy.array(names)
 			print names[indices]

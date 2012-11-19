@@ -30,7 +30,7 @@
 \maketitle
 
 \begin{abstract}
-Statistical or machine learning methods have been used to find cancer gene signatures intended to predict survival or to classify patient prognosis as good/poor. However, a recent paper suggests that random gene subsets perform as well or better than 47 published gene signatures obtained through statistical methods, perhaps because cancer disrupts expression of many genes not directly related to cancer \cite{venet}. In this paper, we use different feature selection methods in an attempt to find a small set of genes that distinguishes normal breast tissue from malignant tumor tissue. We plan to compare the predictive power of our selected genes to that of random gene subsets, gene subsets that should be unrelated to cancer, and previously published gene signatures.
+Statistical or machine learning methods have been used to find cancer gene signatures intended to classify patient prognosis. In this paper, we use different feature selection and sparse regression methods in an attempt to find a small set of genes that distinguishes normal breast tissue from malignant tumor tissue. We plan to compare the efficacy of these methods, and we also plan to compare the predictive power of our selected genes to that of random gene subsets, gene subsets that should be unrelated to cancer, and previously published gene signatures.
 
 %In this paper, we use different feature selection methods to identify the most important genes that distinguish normal breast tissue from malignant tumor tissue. We plan to compare the predictive power of our selected genes to that of random gene subsets, gene subsets that should be unrelated to cancer, and previously published gene signatures. Our methods include forward feature selection, backward feature selection, and sparse regression. We find that ... works best and we are able to distinguish cancer tissue from normal tissue with an accuracy of ... \%. 
 
@@ -39,9 +39,9 @@ Statistical or machine learning methods have been used to find cancer gene signa
 
 \section{Introduction}
 
-Microarray technology has allowed for significant improvements in determining which genes’ expression correlate with specific diseases. In particular, much work has been done in using gene expression data to predict cancer survival [1,2] or classify types or subtypes of cancer [1,3,4]. Popular approaches include machine learning techniques (such as entropy theory), 2 and t-statistics for feature selection followed by k-nearest-neighbors, and Naive Bayes and SVM for classification [5]. While some authors have verified that their results are better than random, however, Venet \emph{et al.} report that some authors who assume a null hypothesis of no association between a randomly selected gene signature and survival have published gene signatures that do not perform significantly better (or even perform worse) than a randomly selected signature [6].%FIXME:hard-coded references
+Microarray technology has allowed for significant improvements in determining which genes' expression correlate with specific diseases. In particular, much work has been done in using gene expression data to predict cancer survival [1,2] or classify types or subtypes of cancer [1,3,4]. Popular approaches include machine learning techniques (such as entropy theory), 2 and t-statistics for feature selection followed by k-nearest-neighbors, and Naive Bayes and SVM for classification [5]. While some authors have verified that their results are better than random, however, Venet \emph{et al.} report that some authors who assume a null hypothesis of no association between a randomly selected gene signature and survival have published gene signatures that do not perform significantly better (or even perform worse) than a randomly selected signature [6].%FIXME:hard-coded references
 
-In this paper, we describe our attempts to use feature selection to identify a gene signature for breast cancer. The data set, provided to us by Professor David Dill, was originally obtained from the National Cancer Institute’s Cancer Genome Atlas and includes expression data of 17814 genes from 599 people, of whom 533 have breast cancer and 66 do not. Data was obtained from Agilent G4502 microarrays. 
+In this paper, we describe our attempts to use feature selection to identify a gene signature for breast cancer. The data set, provided to us by Professor David Dill, was originally obtained from the National Cancer Institute's Cancer Genome Atlas and includes expression data of 17814 genes from 599 people, of whom 533 have breast cancer and 66 do not. Data was obtained from Agilent G4502 microarrays. 
 
 \section{Methods}
 \setcounter{subsection}{-1} %this makes it so that preprocessing is 2.0 so that 2.1 and 3.1 both refer to forward selection
@@ -53,7 +53,8 @@ TODO for final report: describe methods
 The most straightforward method for feature selection is forward selection: rank the features by some score, then select a specified number of the highest-ranking features, or select all features that have a score higher than some cutoff. We ranked the genes by Chi2 statistic and selected the 50 highest ranking features. The Chi2 statistic measures the dependence between random variables, so we select the features that are least likely to be independent of class. One downside of this method is that if 2 relevant features are (nearly) identical, we select both even though really only one of the two gives us new information.
 %\subsection{Backwards Selection}
 
-%\subsection{Logistic Regression}
+\subsection{Logistic Regression}
+L1 regularization sends many of the coefficients in our model to 0 so that the features with nonzero weight become our selected features.
 
 \section{Results \& Discussion}
 
@@ -89,13 +90,13 @@ To measure the prediction power of our model we used 4-fold cross validation. To
 \end{figure}
 
 %will not be including huge lists of genes in the final doc, but since we haven't evaluated these lists yet, just putting them here as what-we-have-so-far
-The precision and recall for a logistic regression with no regularization were 0.995 and 0.996. As can be seen in Figure \ref{fig:sparselog}, C=0.01 provides reasonable precision/recall while still providing a reasonably small number of selected features. The genes selected when C=0.01 when training on a random 3-quarters of our dataset were $[$'ACVR1C', 'ADAMDEC1', 'ADH4', 'AKR1C1', 'AMIGO2', 'ANKRD22', 'ANLN', 'AREG', 'ASPA', 'ASPN', 'BUB1', 'C6orf156', 'CA4', 'CEACAM6', 'CEP55', 'CES1', 'CITED1', 'COL10A1', 'COL11A1', 'CST1', 'CXCL11', 'CXCL2', 'CXCL3', 'DAZ4', 'FABP1', 'FAM111B', 'FAM3B', 'FLJ35773', 'FLJ45557', 'GGTA1', 'GJB2', 'GSTA2', 'HEMGN', 'HLA-DPB1', 'HMGCLL1', 'IGSF10', 'INHBA', 'JAKMIP1', 'KIF14', 'LRRC3B', 'MMP1', 'MMP11', 'MMP13', 'MMP3', 'MUCL1', 'NPNT', 'NPY2R', 'OCA2', 'PDK4', 'PPAPDC1A', 'PTPRR', 'S100B', 'S100P', 'SDPR', 'SEMA3A', 'SFRP1', 'SNCA', 'SULT2A1', 'SYT13', 'TDO2', 'TFPI2', 'TNMD', 'TSLP', 'USP44', 'VCX3A', 'WISP1'$]$.
+The precision and recall for a logistic regression with no regularization were 0.995 and 0.996. As can be seen in Figure \ref{fig:sparselog}, C=0.01 provides reasonable precision/recall while still providing a reasonably small number of selected features. The genes selected when C=0.01 when training on a random 3-quarters of our dataset were $[$'ADAMDEC1', 'ANGPTL7', 'AREG', 'ASPN', 'C20orf103', 'C20orf54', 'CA4', 'CAMP', 'CCL11', 'COL10A1', 'COL11A1', 'COL1A1', 'COMP', 'CST1', 'CTHRC1', 'CXCL11', 'CXCL2', 'DLK1', 'FABP7', 'FAM111B', 'FAM19A4', 'FGB', 'FGFBP1', 'FHL1', 'FLJ35773', 'FLJ45557', 'GDF10', 'GGTA1', 'GJB2', 'GLRA3', 'GPC3', 'GPR84', 'GSTA2', 'HMGCLL1', 'IGFBP1', 'IGSF10', 'INHBA', 'KIAA1576', 'KIF2C', 'KLRC3', 'LOC152573', 'LOC55908', 'LRRC3B', 'MAOA', 'MKI67', 'MMP10', 'MMP11', 'MMP13', 'MMP3', 'MMP9', 'MUCL1', 'MYEOV', 'MYPN', 'NLGN1', 'NR0B1', 'NUF2', 'OCA2', 'PCK1', 'PCOLCE2', 'PPAPDC1A', 'PPEF1', 'PTPRZ1', 'PTX3', 'RBP4', 'S100B', 'SFRP2', 'SPINK5', 'SSTR1', 'SYT13', 'TFPI2', 'TSLP', 'VCX2', 'WISP1', 'ZBED2'$]$
 
 Taking the intersection of all the gene lists generated during cross-validation, we found that the genes that appear in all four of these lists are $[$'COL10A1', 'AREG', 'WISP1', 'COL11A1', 'TNMD', 'GJB2', 'PPAPDC1A', 'CA4', 'SYT13', 'SFRP1', 'TFPI2', 'FAM111B', 'MMP3', 'MMP11'$]$. However, it is worrying that there is so little overlap with the gene lists obtained from forward selection.
 
 \subsection{Random Subsets}
 
-However, we find that we can achieve near-perfect precision/recall with random subsets as well. The following numbers are from training a SVM in 4-fold cross-validation with random subsets of 50 genes:
+In fact, we find that we can achieve near-perfect precision/recall with random subsets as well. The following numbers are from training a SVM in 4-fold cross-validation with random subsets of 50 genes:
 \begin{tabular}{ l | c }
     Precision & Recall\\
   \hline 
@@ -106,7 +107,7 @@ However, we find that we can achieve near-perfect precision/recall with random s
   \hline
 \end{tabular}
 \section{Conclusion}
-From these preliminary results, we conclude that while distinguishing between normal and cancerous tissue is easy to do, finding a gene signature in which the genes are actually related to cancer pathology is difficult because In fact, we saw that a random subset of 50 genes can provide good predictive power. We plan to consult the literature and Professor Dill for advice on how to proceed. 
+From these preliminary results, we conclude that while distinguishing between normal and cancerous tissue is easy to do, finding a gene signature in which the genes are actually related to cancer pathology is difficult. In fact, we saw that a random subset of 50 genes can provide good predictive power. We plan to consult the literature and Professor Dill for advice on how to proceed. 
 
 \section{Acknowledgements}
 Thank you to Professor David Dill (Stanford, Department of Computer Science) for data and guidance and to and Professor Stephen Boyd (Stanford, Department of Electrical Engineering) for his guidance.

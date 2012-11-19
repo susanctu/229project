@@ -61,10 +61,18 @@ class TCGAData():
                 lineNum = lineNum + 1
             file.close()
         return self.geneNames
-    
+
+    def _nonzero(self, num):
+        if num == 0:
+            return 0
+        else:
+            return 1
+
     def get_gene_exp_matrix(self):
         expMatrix = []
-        genesMissingData = [0]*17814
+        #genesMissingData = [0]*17814
+        #peopleMissingData = [False]*599
+        #personNum = 0
         for filename in sorted(glob.glob(TCGAData.FILE_SUFFIX)):#
             file = open(filename,'r')
             perPersonCol = []#gene expression data for 1 person, should be in same order as in original files from Dill
@@ -76,13 +84,20 @@ class TCGAData():
                 line = line.rstrip('\n')
                 lineParts = line.split('\t')
                 if (lineParts[TCGAData.EXPRESSION_IDX]=="null"):
-                    genesMissingData[lineNum] = genesMissingData[lineNum] + 1
+                    #peopleMissingData[personNum]=True
+                    #genesMissingData[lineNum] = genesMissingData[lineNum] + 1
                     perPersonCol.append(0.0)
                 else:
                     perPersonCol.append(float(lineParts[TCGAData.EXPRESSION_IDX]))
                 lineNum = lineNum +1
             expMatrix.append(perPersonCol)
             file.close()
+            #personNum = personNum + 1
+        #print(sum(genesMissingData))
+        #genesMissingData[0]=self._nonzero(genesMissingData[0])
+        #numGenesSometimesMissing = reduce(lambda x, y: x+self._nonzero(y), genesMissingData)
+        #print(numGenesSometimesMissing)
+        #print(sum(map(lambda x: 1 if x is True else 0,peopleMissingData)))#number of people with missing data
         return preprocessing.scale(numpy.array(expMatrix),axis=1) #normalize
 
     def get_labels(self): #as a list/array

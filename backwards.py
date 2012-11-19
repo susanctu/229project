@@ -6,7 +6,7 @@ from testUtils import print_genes_nonzero_coeff
 from sklearn.metrics import zero_one
 from sklearn.feature_selection import RFE
 
-def rec_feature_elim(data,num_features=20):
+def rec_feature_elim(data,num_features=17700):
     X = data.get_gene_exp_matrix()
     y = data.get_labels()
     svc = SVC(kernel="linear", C=1)

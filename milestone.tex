@@ -22,8 +22,8 @@
 \documentclass[11pt]{article}
 %\documentclass{acmconf}
 \usepackage[pdftex]{graphicx}
-\usepackage[paper=a4paper,dvips,top=1.5cm,left=1.5cm,right=1.5cm,
-    foot=1cm,bottom=1.5cm]{geometry}
+\usepackage[paper=a4paper,dvips,top=2.5cm,left=1.5cm,right=1.5cm,
+    foot=1cm,bottom=2.5cm]{geometry}
 %----------------------------------------------------------
 \begin{document}
 
@@ -39,8 +39,21 @@ In this paper, we use different feature selection methods to identify the most i
 
 \section{Introduction}
 
+Microarray technology has allowed for significant improvements in determining which genes’ expression correlate with specific diseases. In particular, much work has been done in using gene expression data to predict cancer survival [1,2] or classify types or subtypes of cancer [1,3,4]. Popular approaches include machine learning techniques (such as entropy theory), 2 and t-statistics for feature selection followed by k-nearest-neighbors, and Naive Bayes and SVM for classification [5]. While some authors have verified that their results are better than random, however, Venet \emph{et al.} report that some authors who assume a null hypothesis of no association between a randomly selected gene signature and survival have published gene signatures that do not perform significantly better (or even perform worse) than a randomly selected signature [6].%FIXME:hard-coded references
+
+In this paper, we describe our attempts to use feature selection to identify a gene signature for breast cancer. The data set, provided to us by Professor David Dill, was originally obtained from the National Cancer Institute’s Cancer Genome Atlas and includes expression data of 17814 genes from 599 people, of whom 533 have breast cancer and 66 do not. Data was obtained from Agilent G4502 microarrays. 
+
 \section{Methods}
 
+\subsection{Preprocessing} 
+Expression data was normalized to have mean 0 and standard deviation 1. At least one gene expression value was missing for each of 319 people; These values collectively pertrained to 537 distinct genes and there were a total of 1740 missing values in total.We set these values to be equal to the mean, 0. \\
+
+TODO for final report: describe methods
+%\subsection{Forward Selection}
+
+%\subsection{Backwards Selection}
+
+%\subsection{Logistic Regression}
 
 \section{Results \& Discussion}
 
@@ -69,16 +82,46 @@ average recall: 1.0\\
 
 \begin{figure}[h!]
   \centering
-    \includegraphics[scale=0.5]{sparselog.png}
-  \caption{Results of logistic regression with regularization.}
+    \includegraphics[scale=0.3]{sparselog.png}
+  \caption{Results of logistic regression with l1 regularization. Precision, recall, and sparsity shown are averages resulting from 4-fold cross-validation.}
 \label{fig:sparselog}
 \end{figure}
-%will not be including huge lists of genes in the final doc, but since we haven't evaluated these lists yet, just putting them here as what-we-have-so-far
-The precision and recall for a logistic regression with no regularization were 0.9945255474452555 and 0.996267825311943. As can be seen in Figure \ref{fig:sparselog}, C=0.01 provides reasonable precision/recall while still providing a reasonably small number of selected features. The genes selected when C=0.01 are $[$'ADAMDEC1', 'ANGPTL7', 'AREG', 'ASPN', 'C20orf103', 'C20orf54', 'CA4', 'CAMP', 'CCL11', 'COL10A1', 'COL11A1', 'COL1A1', 'COMP', 'CST1', 'CTHRC1', 'CXCL11', 'CXCL2', 'DLK1', 'FABP7', 'FAM111B', 'FAM19A4', 'FGB', 'FGFBP1', 'FHL1', 'FLJ35773', 'FLJ45557', 'GDF10', 'GGTA1', 'GJB2', 'GLRA3', 'GPC3', 'GPR84', 'GSTA2', 'HMGCLL1', 'IGFBP1', 'IGSF10', 'INHBA', 'KIAA1576', 'KIF2C', 'KLRC3', 'LOC152573', 'LOC55908', 'LRRC3B', 'MAOA', 'MKI67', 'MMP10', 'MMP11', 'MMP13', 'MMP3', 'MMP9', 'MUCL1', 'MYEOV', 'MYPN', 'NLGN1', 'NR0B1', 'NUF2', 'OCA2', 'PCK1', 'PCOLCE2', 'PPAPDC1A', 'PPEF1', 'PTPRZ1', 'PTX3', 'RBP4', 'S100B', 'SFRP2', 'SPINK5', 'SSTR1', 'SYT13', 'TFPI2', 'TSLP', 'VCX2', 'WISP1', 'ZBED2'$]$.
-\begin{thebibliography}{9}
 
-\bibitem{venet}
-  David Venet, Jacques E. Dumont, Vincent Detours
-  Most Random Gene Expression Signatures are Significantly Associated with Breast Cancer Outcome
+%will not be including huge lists of genes in the final doc, but since we haven't evaluated these lists yet, just putting them here as what-we-have-so-far
+The precision and recall for a logistic regression with no regularization were 0.995 and 0.996. As can be seen in Figure \ref{fig:sparselog}, C=0.01 provides reasonable precision/recall while still providing a reasonably small number of selected features. The genes selected when C=0.01 when training on a random 3-quarters of our dataset were $[$'ACVR1C', 'ADAMDEC1', 'ADH4', 'AKR1C1', 'AMIGO2', 'ANKRD22', 'ANLN', 'AREG', 'ASPA', 'ASPN', 'BUB1', 'C6orf156', 'CA4', 'CEACAM6', 'CEP55', 'CES1', 'CITED1', 'COL10A1', 'COL11A1', 'CST1', 'CXCL11', 'CXCL2', 'CXCL3', 'DAZ4', 'FABP1', 'FAM111B', 'FAM3B', 'FLJ35773', 'FLJ45557', 'GGTA1', 'GJB2', 'GSTA2', 'HEMGN', 'HLA-DPB1', 'HMGCLL1', 'IGSF10', 'INHBA', 'JAKMIP1', 'KIF14', 'LRRC3B', 'MMP1', 'MMP11', 'MMP13', 'MMP3', 'MUCL1', 'NPNT', 'NPY2R', 'OCA2', 'PDK4', 'PPAPDC1A', 'PTPRR', 'S100B', 'S100P', 'SDPR', 'SEMA3A', 'SFRP1', 'SNCA', 'SULT2A1', 'SYT13', 'TDO2', 'TFPI2', 'TNMD', 'TSLP', 'USP44', 'VCX3A', 'WISP1'$]$.
+
+Taking the intersection of all the gene lists generated during cross-validation, we found that the genes that appear in all four of these lists are $[$'COL10A1', 'AREG', 'WISP1', 'COL11A1', 'TNMD', 'GJB2', 'PPAPDC1A', 'CA4', 'SYT13', 'SFRP1', 'TFPI2', 'FAM111B', 'MMP3', 'MMP11'$]$. However, it is worrying that there is so little overlap with the gene lists obtained from forward selection.
+
+\subsection{Random Subsets}
+
+However, we find that we can achieve near-perfect precision/recall with random subsets as well. The following numbers are from 4-fold cross-validationwith random subsets of 50 genes:
+\begin{tabular}{ l | c }
+    Precision & Recall\\
+  \hline 
+    1.0 & 1.0 \\
+    0.993 & 0.971 \\
+    0.992 & 0.985 \\
+    0.985 & 1.0 \\
+  \hline
+\end{tabular}
+\section{Conclusion}
+From these preliminary results, we conclude that while distinguishing between normal and cancerous tissue is easy to do, finding a gene signature in which the genes are actually related to cancer pathology is difficult because In fact, we saw that a random subset of 50 genes can provide good predictive power. We plan to consult the literature and Professor Dill for advice on how to proceed. 
+
+\section{Acknowledgements}
+Thank you to Professor David Dill (Stanford, Department of Computer Science) for data and guidance and to and Professor Stephen Boyd (Stanford, Department of Electrical Engineering) for his guidance.
+
+\begin{thebibliography}{9}
+\bibitem{haibe} Haibe-Kains, B., Desmedt, C., Piette, F., Buyse, M., Cardoso, F., van't Veer, L., \& Sotiriou, C. (2008). Comparison of prognostic gene expression signatures for breast cancer. BMC Genomics, 91-9. doi:10.1186/1471-2164-9-394
+
+\bibitem{buyse} Buyse, M., Loi, S., van't Veer, L., Viale, G., Delorenzi, M., Glas, A. M., \& ... Piccart, M. J. (2006). Validation and Clinical Utility of a 70-Gene Prognostic Signature for Women With Node-Negative Breast Cancer. JNCI: Journal Of The National Cancer Institute, 98(17), 1183-1192. doi:10.1093/jnci/djj329
+
+\bibitem{sotiriou} Sotiriou, C., \& Pusztai, L. (2009). Gene-Expression Signatures in Breast Cancer. New England Journal Of Medicine, 360(8), 790-800. doi:10.1056/NEJMra0801289
+
+\bibitem{Abraham} Abraham, G., Kowalczyk, A., Loi, S., Haviv, I., \& Zobel, J. (2010). Prediction of breast cancer prognosis using geneset statistics provides signature stability and biological context. BMC Bioinformatics,11277-291. doi:10.1186/1471-2105-11-277
+
+\bibitem{liu} Liu, H., Li, J., \& Wong, L. (2002). A comparative study on feature selection and classification methods using gene expression profiles and proteomic patterns. Genome Informatics. International Conference On Genome Informatics, 1351-60.
+
+\bibitem{venet} Venet, D., Dumont, J. E., \& Detours, V. (2011). Most Random Gene Expression Signatures Are Significantly Associated with Breast Cancer Outcome. Plos Computational Biology, 7(10), 1-8. doi:10.1371/journal.pcbi.1002240
+
 \end{thebibliography}
 \end{document}

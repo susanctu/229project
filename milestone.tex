@@ -19,11 +19,13 @@
             \texttt{@stanford.edu}
 }
 \date{\today}
-\documentclass[11pt]{article}
+\documentclass[10.75pt]{article}
 %\documentclass{acmconf}
 \usepackage[pdftex]{graphicx}
-\usepackage[paper=a4paper,dvips,top=2.5cm,left=1.5cm,right=1.5cm,
-    foot=1cm,bottom=2.5cm]{geometry}
+%\usepackage[paper=a4paper,dvips,top=2cm,left=1.5cm,right=1.5cm,
+%    foot=3cm,bottom=3cm]{geometry}
+\usepackage[margin=2cm]{geometry}
+\usepackage{float}
 %----------------------------------------------------------
 \begin{document}
 
@@ -31,27 +33,25 @@
 
 \begin{abstract}
 Statistical or machine learning methods have been used to find cancer gene signatures intended to classify patient prognosis. In this paper, we use different feature selection and sparse regression methods in an attempt to find a small set of genes that distinguishes normal breast tissue from malignant tumor tissue. We plan to compare the efficacy of these methods, and we also plan to compare the predictive power of our selected genes to that of random gene subsets, gene subsets that should be unrelated to cancer, and previously published gene signatures.
-
 %In this paper, we use different feature selection methods to identify the most important genes that distinguish normal breast tissue from malignant tumor tissue. We plan to compare the predictive power of our selected genes to that of random gene subsets, gene subsets that should be unrelated to cancer, and previously published gene signatures. Our methods include forward feature selection, backward feature selection, and sparse regression. We find that ... works best and we are able to distinguish cancer tissue from normal tissue with an accuracy of ... \%. 
-
-
 \end{abstract}
 
 \section{Introduction}
 
-Microarray technology has allowed for significant improvements in determining which genes' expression correlate with specific diseases. In particular, much work has been done in using gene expression data to predict cancer survival [2,3] or classify types or subtypes of cancer [2,4,5]. Popular approaches include machine learning techniques (such as entropy theory), 2 and t-statistics for feature selection followed by k-nearest-neighbors, and Naive Bayes and SVM for classification [6]. While some authors have verified that their results are better than random, however, Venet \emph{et al.} report that some authors who assume a null hypothesis of no association between a randomly selected gene signature and survival have published gene signatures that do not perform significantly better (or even perform worse) than a randomly selected signature [2].%FIXME:hard-coded references
+Microarray technology has allowed for significant improvements in determining which genes' expression correlate with specific diseases. In particular, much work has been done in using gene expression data to predict cancer survival [2,3] or classify types or subtypes of cancer [2,4,5]. Popular approaches include machine learning techniques (such as entropy theory), 2 and t-statistics for feature selection followed by k-nearest-neighbors, and Naive Bayes and SVM for classification [6]. While some authors have verified that their results are better than random, however, Venet \emph{et al.} report that some authors who assume a null hypothesis of no association between a randomly selected gene signature and survival have published gene signatures that do not perform significantly better (or even perform worse) than a randomly selected signature\cite{Venet}.%FIXME:hard-coded references
 
 In this paper, we describe our attempts to use feature selection to identify a gene signature for breast cancer. The data set, provided to us by Professor David Dill, was originally obtained from the National Cancer Institute's Cancer Genome Atlas and includes expression data of 17814 genes from 599 people, of whom 533 have breast cancer and 66 do not. Data was obtained from Agilent G4502 microarrays. 
 
 \section{Methods}
 \setcounter{subsection}{-1} %this makes it so that preprocessing is 2.0 so that 2.1 and 3.1 both refer to forward selection
 \subsection{Preprocessing} 
-Expression data was normalized to have mean 0 and standard deviation 1. At least one gene expression value was missing for each of 319 people; These values collectively pertrained to 537 distinct genes and there were a total of 1740 missing values in total.We set these values to be equal to the mean, 0. \\
+Expression data was normalized to have mean 0 and standard deviation 1. At least one gene expression value was missing for each of 319 people; These values collectively pertrained to 537 distinct genes and there were a total of 1740 missing values in total.We set these values to be equal to the mean, 0. 
 
-TODO for final report: describe methods
 \subsection{Forward Selection}
 The most straightforward method for feature selection is forward selection: rank the features by some score, then select a specified number of the highest-ranking features, or select all features that have a score higher than some cutoff. We ranked the genes by Chi2 statistic and selected the 50 highest ranking features. The Chi2 statistic measures the dependence between random variables, so we select the features that are least likely to be independent of class. One downside of this method is that if 2 relevant features are (nearly) identical, we select both even though really only one of the two gives us new information.
-%\subsection{Backwards Selection}
+
+\subsection{Backwards Selection}
+This is very slow, so to get quick results we removed 25 genes on each iteration rather than just 1.
 
 \subsection{Logistic Regression}
 L1 regularization sends many of the coefficients in our model to 0 so that the features with nonzero weight become our selected features.
@@ -80,9 +80,13 @@ To measure the prediction power of our model we used 4-fold cross validation. To
   
 \end{tabular}
 \subsection{Backwards Selection}
+
+Selected genes: $[$'ACTN2', 'AREG', 'ATP6V0A4', 'BMPR1B', 'C14orf50', 'C1QTNF9', 'C20orf103', 'C20orf39', 'CA4', 'CACHD1', 'CDH16', 'CENPF', 'CES1', 'CFD', 'CLGN', 'COL10A1', 'COL11A1', 'CPA6', 'CTTN', 'DPT', 'DSG3', 'EPHA3', 'ERP27', 'F12', 'F2RL2', 'FAM111B', 'FAM19A4', 'FGF18', 'FGFBP1', 'FLJ35773', 'GJB2', 'GJB7', 'GPM6A', 'GPR64', 'GSTA2', 'IRX2', 'JAKMIP1', 'KLK12', 'KRT25', 'LHX2', 'LOC152573', 'MMP11', 'MMP13', 'MMP3', 'MYEOV', 'NPFFR2', 'NPTX2', 'NUF2', 'NUP62CL', 'OASL', 'OR5AR1', 'OSR2', 'PID1', 'PTTG1', 'PTTG2', 'REXO1L1', 'RSAD2', 'S100B', 'SAA1', 'TFPI', 'TFPI2', 'VCX2', 'VCX3A', 'WISP1'$]$\\
+Precision: 99.257856957, Recall: 99.62684489 (averages from 4-fold validation)
+
 \subsection{Logistic Regression}
 
-\begin{figure}[h!]
+\begin{figure}[h]
   \centering
     \includegraphics[scale=0.3]{sparselog.png}
   \caption{Results of logistic regression with l1 regularization. Precision, recall, and sparsity shown are averages resulting from 4-fold cross-validation.}
@@ -96,7 +100,7 @@ Taking the intersection of all the gene lists generated during cross-validation,
 
 \subsection{Random Subsets}
 
-In fact, we find that we can achieve near-perfect precision/recall with random subsets as well. The following numbers are from training a SVM in 4-fold cross-validation with random subsets of 50 genes:
+In fact, we find that we can achieve near-perfect precision/recall with random subsets as well. The following numbers are from training a SVM in 4-fold cross-validation with random subsets of 50 genes: \\
 \begin{tabular}{ l | c }
     Precision & Recall\\
   \hline 
@@ -110,20 +114,20 @@ In fact, we find that we can achieve near-perfect precision/recall with random s
 From these preliminary results, we conclude that while distinguishing between normal and cancerous tissue is easy to do, finding a gene signature in which the genes are actually related to cancer pathology is difficult. In fact, we saw that a random subset of 50 genes can provide good predictive power. We plan to consult the literature and Professor Dill for advice on how to proceed. 
 
 \section{Acknowledgements}
-Thank you to Professor David Dill (Stanford, Department of Computer Science) for data and guidance and to and Professor Stephen Boyd (Stanford, Department of Electrical Engineering) for his guidance.
+Thank you to Professor David Dill (Stanford, Department of Computer Science) for data and guidance and to Professor Stephen Boyd (Stanford, Department of Electrical Engineering) for his guidance.
 
 \begin{thebibliography}{9}
 
-\cite{bibitem-Venet} Venet, D., Dumont, J. E. and Detours, V. Most Random Gene Expression Signatures Are Significantly Associated with Breast Cancer Outcome. \emph{Plos Computational Biology}, 7(10):1-8, 2008
+\bibitem{Venet} Venet, D., Dumont, J. E. and Detours, V. Most Random Gene Expression Signatures Are Significantly Associated with Breast Cancer Outcome. \emph{Plos Computational Biology}, 7(10):1-8, 2008
 
-\cite{bibitem-Haibe} Haibe-Kains, B., Desmedt, C., Piette, F., Buyse, M., Cardoso, F., van't Veer, L. and Sotiriou, C. Comparison of prognostic gene expression signatures for breast cancer. \emph{BMC Genomics}, 9:1-9. 2008
+\bibitem{Haibe} Haibe-Kains, B., Desmedt, C., Piette, F., Buyse, M., Cardoso, F., van't Veer, L. and Sotiriou, C. Comparison of prognostic gene expression signatures for breast cancer. \emph{BMC Genomics}, 9:1-9. 2008
 
-\cite{bibitem-Buyse} Buyse, M., Loi, S., van't Veer, L., Viale, G., Delorenzi, M., Glas, A. M. and Piccart, M. J. Validation and Clinical Utility of a 70-Gene Prognostic Signature for Women With Node-Negative Breast Cancer. \emph{JNCI: Journal Of The National Cancer Institute}, 98(17):1183-1192, 2006. 
+\bibitem{Buyse} Buyse, M., Loi, S., van't Veer, L., Viale, G., Delorenzi, M., Glas, A. M. and Piccart, M. J. Validation and Clinical Utility of a 70-Gene Prognostic Signature for Women With Node-Negative Breast Cancer. \emph{JNCI: Journal Of The National Cancer Institute}, 98(17):1183-1192, 2006. 
 
-\cite{bibitem-Sotiriou} Sotiriou, C. and Pusztai, L. Gene-Expression Signatures in Breast Cancer. \emph{New England Journal Of Medicine}, 360(8):790-800, 2009
+\bibitem{Sotiriou} Sotiriou, C. and Pusztai, L. Gene-Expression Signatures in Breast Cancer. \emph{New England Journal Of Medicine}, 360(8):790-800, 2009
 
-\cite{bibitem-Abraham} Abraham, G., Kowalczyk, A., Loi, S., Haviv, I. and Zobel, J. Prediction of breast cancer prognosis using geneset statistics provides signature stability and biological context. \emph{BMC Bioinformatics}, 11:277-291, 2010.
+\bibitem{Abraham} Abraham, G., Kowalczyk, A., Loi, S., Haviv, I. and Zobel, J. Prediction of breast cancer prognosis using geneset statistics provides signature stability and biological context. \emph{BMC Bioinformatics}, 11:277-291, 2010.
 
-\cite{bibitem-Liu} Liu, H., Li, J. and Wong, L. A comparative study on feature selection and classification methods using gene expression profiles and proteomic patterns. \emph{Genome Informatics. International Conference On Genome Informatics}, 13:51-60, 2002.
+\bibitem{Liu} Liu, H., Li, J. and Wong, L. A comparative study on feature selection and classification methods using gene expression profiles and proteomic patterns. \emph{Genome Informatics. International Conference On Genome Informatics}, 13:51-60, 2002.
 \end{thebibliography}
 \end{document}

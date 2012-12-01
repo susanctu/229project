@@ -51,7 +51,7 @@ class Data:
                 continue 
             line = line.rstrip('\n')
             lineParts = line.split('\t')
-            assert(len(lineParts)==1841)#check that for this gene we have expression data for all 38 types of cells
+            assert(len(lineParts)==1841)#check that for this gene we have data from 1841 arrays
             normalLineParts =[]
             for i in range(0,len(lineParts)):
                 if self.isNormal[i]:
@@ -68,7 +68,6 @@ def test():
     geneNames = data.get_gene_names()
     print(len(geneExp))
     print(len(geneExp[0]))
-    print(len(labels))
     print(labels)
 
 if __name__=="__main__":

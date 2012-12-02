@@ -6,6 +6,7 @@ from testUtils import evaluateClassifications
 from loadData import Data
 from testUtils import kFoldCrossValid
 import numpy
+from sklearn.multiclass import OneVsOneClassifier
 
 #TODO DOING FEATURE SELECTION ON ALL DATA, SO RESULTING ACCURACY DOES NOT REFLECT REAL PREDICTION POWER
 
@@ -15,8 +16,8 @@ def svmfn(featureSelectionMethod = 'none'):
     labels = data.get_labels()
     names = data.get_gene_names()
     #USES a 1 vs 1 scheme - how does this work?
-    clf = svm.SVC(gamma=0.001,C=100.) #these are the values in some random example, idk what C is
-    accuracy = kFoldCrossValid(gene_exp,labels,clf,k=4,names=names,selection=featureSelectionMethod)     
+    clf = svm.SVC(C=1.) #these are the values in some random example, idk what C is
+    accuracy = kFoldCrossValid(gene_exp,labels,OneVsOneClassifier(clf),k=4,names=names,selection=featureSelectionMethod)     
     print(accuracy)
 
 
@@ -29,8 +30,8 @@ def learnWithSVM(trainingData,trainingLabels,testData,testLabels,numFeatures):
 	return evaluateClassifications(predicted,testLabels)[0]
 	
 if __name__=="__main__":
-	#svmfn()
-	svmfn('chi2')
+	svmfn()
+	#svmfn('chi2')
 	#svmfn('random')
 	"""
 	basicFeatureSelection = True #Uses all features if false, forward feature selection using chi2 if true

@@ -44,14 +44,17 @@ class Data:
                   self.isNormal.append(True)
             else:
                 self.isNormal.append(False)
-        cellID = 0
         file.close()
  
     def get_labels(self):
-        return(self.cellTypes)
+        return(numpy.array(self.cellTypes))
 
     def get_gene_exp_matrix(self):
-        expMatrix = [[0]*11927]*sum(self.isNormal)#initialize to be number of normal arrays by 11927 to avoid growing/copying lists
+        numNormal = sum(self.isNormal)#initialize to be number of normal arrays by 11927 to avoid growing/copying lists
+        expMatrix = []
+        for i in range(0,numNormal):
+                expMatrix.append([0]*11927)
+        
         file = open(Data.FILE_LOC + 'expression.txt','r')
         lineNum = -1 
         for line in file:
@@ -60,14 +63,16 @@ class Data:
                 continue 
             line = line.rstrip('\n')
             lineParts = line.split('\t')
+            print(len(lineParts))
             assert(len(lineParts)==1841)#check that for this gene we have data from 1841 arrays
             normalLineParts =[]
             for i in range(0,len(lineParts)):
                 if self.isNormal[i]:
-                    normalLineParts.append(lineParts[i])  
-            for expForCell,linePt in zip(expMatrix,normalLineParts):
-                expForCell[lineNum]=float(linePt)
+                    normalLineParts.append(lineParts[i]) 
+            for i in range(0,len(normalLineParts)):
+                expMatrix[i][lineNum]=float(normalLineParts[i])
             lineNum = lineNum +1
+        file.close()
         #print(expMatrix)
         return preprocessing.scale(numpy.array(expMatrix),axis=1) #normalize
          
@@ -78,6 +83,8 @@ def test():
     geneNames = data.get_gene_names()
     #print(len(geneExp))
     #print(len(geneExp[0]))
+    print(geneExp[0].tolist())
+    print(geneExp[1])
     #print(labels)
 
 if __name__=="__main__":

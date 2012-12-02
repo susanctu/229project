@@ -15,7 +15,7 @@ def print_genes_nonzero_coeff(data,coeffs):#data should be a TCGAData object
             nonzeroNames.append(names[i])
     return nonzeroNames
 
-def kFoldCrossValid(X,Y,learningAlgo,k=4,names=None,selection='none'):#learningAlgo is an object, not a function! and assumes that X and Y are already numpy.arrays 
+def kFoldCrossValid(X,Y,learningAlgo,k=210,names=None,selection='none'):#learningAlgo is an object, not a function! and assumes that X and Y are already numpy.arrays 
 
         """
         Expects matrix with feature vectors, labels, a learning algorithm, and (optionally) k and a feature selection method. Currently supporting 'chi2' and 'none' and 'random'.
@@ -58,14 +58,14 @@ def kFoldCrossValid(X,Y,learningAlgo,k=4,names=None,selection='none'):#learningA
 			X_train = X_train[:,indices]
 			X_test = numpy.array(X_test)
 			X_test = X_test[:,indices]
-		learningAlgo.fit(X_train,y_train)
+		learningAlgo.fit(numpy.array(X_train),numpy.array(y_train))
                 predictions = []
                 for x_vec in X_test:
                     predictions.append(learningAlgo.predict(x_vec)[0])
-		print 'y_test:'
-		print y_test
-		print 'predictions:'
-		print predictions
+		#print 'y_test:'
+		#print y_test
+		#print 'predictions:'
+		#print predictions
                 accuracy.append(evaluateClassifications(predictions,y_test))
         return accuracy
 

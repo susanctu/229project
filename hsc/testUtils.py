@@ -80,6 +80,7 @@ def evaluateClassifications(predicted,testLabels):
 	tn = 0.0
 	
 	for i in range(0,len(predicted)):
+                print(predicted[i].__str__() + ' ' + testLabels[i].__str__())
 		if predicted[i]==testLabels[i]: numRight+=1
 		else: numWrong+=1
 	accuracy = numRight / (numRight + numWrong)

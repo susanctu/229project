@@ -59,6 +59,7 @@ class Data:
             for expForCell,linePt in zip(expMatrix,normalLineParts):
                 expForCell[lineNum]=float(linePt)
             lineNum = lineNum +1
+        print(expMatrix)
         return preprocessing.scale(numpy.array(expMatrix),axis=1) #normalize
          
 def test():
@@ -66,9 +67,9 @@ def test():
     geneExp = data.get_gene_exp_matrix()
     labels = data.get_labels()
     geneNames = data.get_gene_names()
-    print(len(geneExp))
-    print(len(geneExp[0]))
-    print(labels)
+    #print(len(geneExp))
+    #print(len(geneExp[0]))
+    #print(labels)
 
 if __name__=="__main__":
     test() 

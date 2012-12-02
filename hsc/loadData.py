@@ -44,7 +44,11 @@ class Data:
         return(self.cellTypes)
 
     def get_gene_exp_matrix(self):
-        expMatrix = [[0]*11927]*sum(self.isNormal)#initialize to be number of normal arrays by 11927 to avoid growing/copying lists
+        n = sum(self.isNormal)#initialize to be number of normal arrays by 11927 to avoid growing/copying lists
+	expMatrix = []
+	for i in range(0,n):
+		expMatrix.append([0]*11927)	 
+	print sum(self.isNormal)
         file = open(Data.FILE_LOC + 'expression.txt','r')
         lineNum = -1 
         for line in file:
@@ -58,9 +62,17 @@ class Data:
             for i in range(0,len(lineParts)):
                 if self.isNormal[i]:
                     normalLineParts.append(lineParts[i])  
-            for expForCell,linePt in zip(expMatrix,normalLineParts):
-                expForCell[lineNum]=float(linePt)
+            #if lineNum == 0:
+	    #	print normalLineParts
+            #for expForCell,linePt in zip(expMatrix,normalLineParts):
+            #    expForCell[lineNum]=float(linePt)
+            for i in range(0,sum(self.isNormal)):
+		expMatrix[i][lineNum] = normalLineParts[i]
+            #if lineNum == 0:
+	    	#print expMatrix
             lineNum = lineNum +1
+	print expMatrix[90]
+	print len(expMatrix[89])
         return preprocessing.scale(numpy.array(expMatrix),axis=1) #normalize
          
 def test():

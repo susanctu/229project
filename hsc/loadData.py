@@ -33,9 +33,9 @@ class Data:
         for arrayName in arrayNames:
             shortName = arrayName[0:Data.ARRAY_ID_LEN]
             if shortName in self.arrayToCellType:
-		  print self.arrayToCellType[shortName]
-		  print hash(self.arrayToCellType[shortName])
-                  self.cellTypes.append(hash(self.arrayToCellType[shortName]))
+		  #print self.arrayToCellType[shortName]
+		  #print hash(self.arrayToCellType[shortName])%1487
+                  self.cellTypes.append(hash(self.arrayToCellType[shortName])%1487) #MAGIC NUMBER
                   self.isNormal.append(True)
             else:
                 self.isNormal.append(False)

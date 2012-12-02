@@ -33,13 +33,11 @@ def kFoldCrossValid(X,Y,learningAlgo,k=4,names=None,selection='none'):#learningA
 	    	#print("TRAIN: %s TEST: %s" % (train_index, test_index))
 	    	X_train, X_test = [X[i] for i in train_index], [X[i] for i in test_index]
 	    	y_train, y_test = [Y[i] for i in train_index], [Y[i] for i in test_index]
-		print "y_train is" 
-		print y_train
 		#print "Xtrain has %d examples, ytrain has %d labels" % (len(X_train),len(y_train))
     		if(selection=='chi2'):
 			numFeatures = len(X_train[0])
 			numExamples = len(y_train)
-			fs = SelectKBest(chi2,k=50)
+			fs = SelectKBest(chi2,k=250)
 			#fs.fit(numpy.array(X_train)*1000,y_train)
 			fs.fit(numpy.array(X)*1000,Y)
 			indices =  fs.get_support() #I think this gives you a bit mask of which features you want
@@ -64,6 +62,10 @@ def kFoldCrossValid(X,Y,learningAlgo,k=4,names=None,selection='none'):#learningA
                 predictions = []
                 for x_vec in X_test:
                     predictions.append(learningAlgo.predict(x_vec)[0])
+		print 'y_test:'
+		print y_test
+		print 'predictions:'
+		print predictions
                 accuracy.append(evaluateClassifications(predictions,y_test))
         return accuracy
 

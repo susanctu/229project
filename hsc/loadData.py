@@ -8,7 +8,8 @@ class Data:
     ARRAY_ID_LEN = 9
     def __init__(self):
         self.geneNames = []
-        self.cellTypes = []
+        self.cellTypes = []#numbers
+        self.cellNameToCellType = {}
         self.isNormal = [] #boolean, is this array normal or not?
         self.arrayToCellType = {}
         self._make_arrayToCellType()
@@ -19,13 +20,19 @@ class Data:
             file = open(Data.FILE_LOC + 'genes.txt','r') 
             for line in file:
                 self.geneNames.append(line.rstrip('\n'))#some of these might be ---
+            file.close()
         return(self.geneNames)        
 
     def _make_arrayToCellType(self):
         broadFile = open(Data.FILE_LOC + 'BroadArrayList.txt')
+        numTypes = 0
         for line in broadFile:
             lineParts = line.rstrip('\n').split('\t')
-            self.arrayToCellType[lineParts[0]]=lineParts[2]
+            if not lineParts[2] in self.cellNameToCellType:
+                self.cellNameToCellType[lineParts[2]]=numTypes
+                numTypes+=1
+            self.arrayToCellType[lineParts[0]]=self.cellNameToCellType[lineParts[2]]
+        broadFile.close()
 
     def _make_cellTypes(self): 
         file = open(Data.FILE_LOC + 'expression.txt','r')
@@ -33,13 +40,13 @@ class Data:
         for arrayName in arrayNames:
             shortName = arrayName[0:Data.ARRAY_ID_LEN]
             if shortName in self.arrayToCellType:
-		  print self.arrayToCellType[shortName]
-		  print hash(self.arrayToCellType[shortName])
-                  self.cellTypes.append(hash(self.arrayToCellType[shortName]))
+                  self.cellTypes.append(self.arrayToCellType[shortName])
                   self.isNormal.append(True)
             else:
                 self.isNormal.append(False)
-  
+        cellID = 0
+        file.close()
+ 
     def get_labels(self):
         return(self.cellTypes)
 
@@ -61,7 +68,7 @@ class Data:
             for expForCell,linePt in zip(expMatrix,normalLineParts):
                 expForCell[lineNum]=float(linePt)
             lineNum = lineNum +1
-        print(expMatrix)
+        #print(expMatrix)
         return preprocessing.scale(numpy.array(expMatrix),axis=1) #normalize
          
 def test():

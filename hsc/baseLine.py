@@ -11,15 +11,20 @@ from sklearn.multiclass import OneVsOneClassifier
 
 #TODO DOING FEATURE SELECTION ON ALL DATA, SO RESULTING ACCURACY DOES NOT REFLECT REAL PREDICTION POWER
 
-def svmfn(featureSelectionMethod = 'none'):
+"""
+param featureSelectionMethod: pass in a string, passes it on into the methods in testUtils (currently supports 'chi2','random') - default is 'none'
+calls an svm with C =
+
+"""
+def svmfn(featureSelectionMethod = 'none',numFeatures = '330'):
     data = Data()
     gene_exp = data.get_gene_exp_matrix()
     labels = data.get_labels()
     names = data.get_gene_names()
     #USES a 1 vs 1 scheme - how does this work?
-    clf = svm.SVC(C=1.) #these are the values in some random example, idk what C is
+    clf = svm.SVC(C=50.,kernel='linear') #kernel can be poly, rbf, linear, sigmoid
     #accuracy = kFoldCrossValid(gene_exp,labels,OneVsOneClassifier(clf),k=4,names=names,selection=featureSelectionMethod)     
-    accuracy = leaveOneOutCrossValid(gene_exp,labels,OneVsOneClassifier(clf),names=names,selection=featureSelectionMethod)     
+    accuracy = leaveOneOutCrossValid(gene_exp,labels,OneVsOneClassifier(clf),names=names,selection=featureSelectionMethod,numFeatures=numFeatures)     
     print 'accuracy is'
     print accuracy
 	

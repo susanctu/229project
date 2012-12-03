@@ -15,7 +15,7 @@ def print_genes_nonzero_coeff(data,coeffs):#data should be a TCGAData object
             nonzeroNames.append(names[i])
     return nonzeroNames
 
-def leaveOneOutCrossValid(X,Y,learningAlgo,names=None,selection='none'):#learningAlgo is an object, not a function! and assumes that X and Y are already numpy.arrays 
+def leaveOneOutCrossValid(X,Y,learningAlgo,names=None,selection='none',numFeatures = 330):#learningAlgo is an object, not a function! and assumes that X and Y are already numpy.arrays 
 
         """
 	TODO CHANGE THIS
@@ -41,7 +41,7 @@ def leaveOneOutCrossValid(X,Y,learningAlgo,names=None,selection='none'):#learnin
     		if(selection=='chi2'):
 			numFeatures = len(X_train[0])
 			numExamples = len(y_train)
-			fs = SelectKBest(chi2,k=150)
+			fs = SelectKBest(chi2,k=330)
 			fs.fit(numpy.array(X)*1000,Y)
 			indices =  fs.get_support() #I think this gives you a bit mask of which features you want
 			#names =numpy.array(names)

@@ -3,10 +3,10 @@ from sklearn.feature_selection import SelectKBest
 from sklearn.feature_selection import chi2
 import numpy
 from loadData import Data
-import pylab
+#import pylab
 from numpy import *
-import matplotlib.pyplot as plt
-from pylab import *
+#import matplotlib.pyplot as plt
+#from pylab import *
 
 """This file contains useful functions for testing/evaluating different learning algorithms"""
 
@@ -21,6 +21,8 @@ def print_genes_nonzero_coeff(data,coeffs):#data should be a TCGAData object
 
 def leaveOneOutCrossValid(X,Y,learningAlgo,names=None,selection='none',numFeatures = 330):#learningAlgo is an object, not a function! and assumes that X and Y are already numpy.arrays 
 
+	print 'numFeatures is:'
+	print numFeatures
         """
 	TODO CHANGE THIS
         Expects matrix with feature vectors, labels, a learning algorithm, and (optionally) k and a feature selection method. Currently supporting 'chi2' and 'none' and 'random'.
@@ -45,7 +47,7 @@ def leaveOneOutCrossValid(X,Y,learningAlgo,names=None,selection='none',numFeatur
     		if(selection=='chi2'):
 			numFeatures = len(X_train[0])
 			numExamples = len(y_train)
-			fs = SelectKBest(chi2,k=330)
+			fs = SelectKBest(chi2,k=numFeatures)
 			fs.fit(numpy.array(X)*1000,Y)
 			indices =  fs.get_support() #I think this gives you a bit mask of which features you want
 			#names =numpy.array(names)

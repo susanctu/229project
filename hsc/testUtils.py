@@ -19,9 +19,10 @@ def print_genes_nonzero_coeff(data,coeffs):#data should be a TCGAData object
             nonzeroNames.append(names[i])
     return nonzeroNames
 
-def kFoldCrossValid(X,Y,learningAlgo,k=210,names=None,selection='none'):#learningAlgo is an object, not a function! and assumes that X and Y are already numpy.arrays 
+def leaveOneOutCrossValid(X,Y,learningAlgo,names=None,selection='none'):#learningAlgo is an object, not a function! and assumes that X and Y are already numpy.arrays 
 
         """
+	TODO CHANGE THIS
         Expects matrix with feature vectors, labels, a learning algorithm, and (optionally) k and a feature selection method. Currently supporting 'chi2' and 'none' and 'random'.
         The learning algorithm needs to have a "fit" method that takes matrix with feature vectors and labels
         and a predict method that takes in just one feature vector and returns a list (of length 1) with the prediction
@@ -30,23 +31,25 @@ def kFoldCrossValid(X,Y,learningAlgo,k=210,names=None,selection='none'):#learnin
 
         Returns list with accuracies.
         """
-
-	kf = cross_validation.KFold(len(X), k=k,shuffle=True) #TODO vary k
-        accuracy = []
-	for train_index, test_index in kf:
-	    	#print("TRAIN: %s TEST: %s" % (train_index, test_index))
+	print 'num samples??'
+	print len(X)
+	l1o = cross_validation.LeaveOneOut(len(X)) 
+	numRight = 0.0
+	numWrong = 0
+	predictions = []
+	actual = []
+	for train_index, test_index in l1o:
+		print 'run of leave one out'
 	    	X_train, X_test = [X[i] for i in train_index], [X[i] for i in test_index]
 	    	y_train, y_test = [Y[i] for i in train_index], [Y[i] for i in test_index]
-		#print "Xtrain has %d examples, ytrain has %d labels" % (len(X_train),len(y_train))
     		if(selection=='chi2'):
 			numFeatures = len(X_train[0])
 			numExamples = len(y_train)
-			fs = SelectKBest(chi2,k=250)
-			#fs.fit(numpy.array(X_train)*1000,y_train)
+			fs = SelectKBest(chi2,k=150)
 			fs.fit(numpy.array(X)*1000,Y)
 			indices =  fs.get_support() #I think this gives you a bit mask of which features you want
-			names =numpy.array(names)
-			print names[indices]
+			#names =numpy.array(names)
+			#print names[indices]
 			X_train = numpy.array(X_train)
 			X_train = X_train[:,indices]
 			X_test = numpy.array(X_test)
@@ -63,14 +66,22 @@ def kFoldCrossValid(X,Y,learningAlgo,k=210,names=None,selection='none'):#learnin
 			X_test = numpy.array(X_test)
 			X_test = X_test[:,indices]
 		learningAlgo.fit(numpy.array(X_train),numpy.array(y_train))
-                predictions = []
-                for x_vec in X_test:
-                    predictions.append(learningAlgo.predict(x_vec)[0])
-		#print 'y_test:'
-		#print y_test
-		#print 'predictions:'
-		#print predictions
-                accuracy.append(evaluateClassifications(predictions,y_test))
+		x_vec = X_test[0]
+		p = learningAlgo.predict(x_vec)[0]
+		print 'we predict:'
+		print p
+		print 'the actual result:'
+		print y_test[0] 
+		predictions.append(p)
+		actual.append(y_test[0])
+		if p == y_test[0]: numRight+=1
+		else: numWrong+=1
+	print 'predictions:'
+	print predictions
+	print 'actual:'
+	print actual
+	print zip(predictions,actual)
+	accuracy = numRight / (numRight + numWrong)
         return accuracy
 
 def displayConfusion(conf_arr):#taken from this stackoverflow post: http://stackoverflow.com/questions/2897826/confusion-matrix-with-number-of-classified-misclassified-instances-on-it-python

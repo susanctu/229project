@@ -4,7 +4,8 @@ from sklearn.feature_selection import SelectKBest
 from sklearn.feature_selection import chi2
 from testUtils import evaluateClassifications
 from loadData import Data
-from testUtils import kFoldCrossValid
+#from testUtils import kFoldCrossValid
+from testUtils import leaveOneOutCrossValid
 import numpy
 from sklearn.multiclass import OneVsOneClassifier
 
@@ -17,21 +18,14 @@ def svmfn(featureSelectionMethod = 'none'):
     names = data.get_gene_names()
     #USES a 1 vs 1 scheme - how does this work?
     clf = svm.SVC(C=1.) #these are the values in some random example, idk what C is
-    accuracy = kFoldCrossValid(gene_exp,labels,OneVsOneClassifier(clf),k=4,names=names,selection=featureSelectionMethod)     
-    print(accuracy)
-
-
-#can be used both with all features, and a selected set of features (data is expected only to contain those)
-def learnWithSVM(trainingData,trainingLabels,testData,testLabels,numFeatures):
-	clf = svm.SVC(gamma=0.001,C=100.) #these are the values in some random example, idk what C is
-#TODO later set these using cross validation?
-	clf.fit(trainingData,trainingLabels)
-	predicted = clf.predict(testData)
-	return evaluateClassifications(predicted,testLabels)[0]
+    #accuracy = kFoldCrossValid(gene_exp,labels,OneVsOneClassifier(clf),k=4,names=names,selection=featureSelectionMethod)     
+    accuracy = leaveOneOutCrossValid(gene_exp,labels,OneVsOneClassifier(clf),names=names,selection=featureSelectionMethod)     
+    print 'accuracy is'
+    print accuracy
 	
 if __name__=="__main__":
-	svmfn()
-	#svmfn('chi2')
+	#svmfn()
+	svmfn('chi2')
 	#svmfn('random')
 	"""
 	basicFeatureSelection = True #Uses all features if false, forward feature selection using chi2 if true

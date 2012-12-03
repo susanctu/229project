@@ -63,7 +63,7 @@ class Data:
                 continue 
             line = line.rstrip('\n')
             lineParts = line.split('\t')
-            print(len(lineParts))
+            #print(len(lineParts))
             assert(len(lineParts)==1841)#check that for this gene we have data from 1841 arrays
             normalLineParts =[]
             for i in range(0,len(lineParts)):
@@ -83,8 +83,8 @@ def test():
     geneNames = data.get_gene_names()
     #print(len(geneExp))
     #print(len(geneExp[0]))
-    print(geneExp[0].tolist())
-    print(geneExp[1])
+    #print(geneExp[0].tolist())
+    #print(geneExp[1])
     #print(labels)
 
 if __name__=="__main__":

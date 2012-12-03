@@ -31,15 +31,15 @@ def leaveOneOutCrossValid(X,Y,learningAlgo,names=None,selection='none',numFeatur
 
         Returns list with accuracies.
         """
-	print 'num samples??'
-	print len(X)
+#	print 'num samples??'
+#	print len(X)
 	l1o = cross_validation.LeaveOneOut(len(X)) 
 	numRight = 0.0
 	numWrong = 0
 	predictions = []
 	actual = []
 	for train_index, test_index in l1o:
-		print 'run of leave one out'
+#		print 'run of leave one out'
 	    	X_train, X_test = [X[i] for i in train_index], [X[i] for i in test_index]
 	    	y_train, y_test = [Y[i] for i in train_index], [Y[i] for i in test_index]
     		if(selection=='chi2'):
@@ -68,10 +68,10 @@ def leaveOneOutCrossValid(X,Y,learningAlgo,names=None,selection='none',numFeatur
 		learningAlgo.fit(numpy.array(X_train),numpy.array(y_train))
 		x_vec = X_test[0]
 		p = learningAlgo.predict(x_vec)[0]
-		print 'we predict:'
-		print p
-		print 'the actual result:'
-		print y_test[0] 
+#		print 'we predict:'
+#		print p
+#		print 'the actual result:'
+#		print y_test[0] 
 		predictions.append(p)
 		actual.append(y_test[0])
 		if p == y_test[0]: numRight+=1
@@ -80,7 +80,7 @@ def leaveOneOutCrossValid(X,Y,learningAlgo,names=None,selection='none',numFeatur
 	print predictions
 	print 'actual:'
 	print actual
-	print zip(predictions,actual)
+#	print zip(predictions,actual)
 	accuracy = numRight / (numRight + numWrong)
         return accuracy
 

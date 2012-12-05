@@ -72,7 +72,7 @@ class TCGAData():
         expMatrix = []
         #genesMissingData = [0]*17814
         #peopleMissingData = [False]*599
-        #personNum = 0
+        personNum = 0
         for filename in sorted(glob.glob(TCGAData.FILE_SUFFIX)):#
             file = open(filename,'r')
             perPersonCol = []#gene expression data for 1 person, should be in same order as in original files from Dill
@@ -86,19 +86,37 @@ class TCGAData():
                 if (lineParts[TCGAData.EXPRESSION_IDX]=="null"):
                     #peopleMissingData[personNum]=True
                     #genesMissingData[lineNum] = genesMissingData[lineNum] + 1
-                    perPersonCol.append(0.0)
+                    perPersonCol.append('null')
                 else:
-                    perPersonCol.append(float(lineParts[TCGAData.EXPRESSION_IDX]))
+                    perPersonCol.append(lineParts[TCGAData.EXPRESSION_IDX])
                 lineNum = lineNum +1
             expMatrix.append(perPersonCol)
             file.close()
-            #personNum = personNum + 1
+            personNum = personNum + 1
         #print(sum(genesMissingData))
         #genesMissingData[0]=self._nonzero(genesMissingData[0])
         #numGenesSometimesMissing = reduce(lambda x, y: x+self._nonzero(y), genesMissingData)
         #print(numGenesSometimesMissing)
         #print(sum(map(lambda x: 1 if x is True else 0,peopleMissingData)))#number of people with missing data
+        geneAvgs = [0]*len(expMatrix[0])
+        for i in range(0,len(expMatrix[0])):#loop over genes and average all the non-null values 
+            expForGene = [person[i] for person in expMatrix]
+            geneAvgs[i]=self._getAvgNonNull(expForGene)
+
+        #now convert everything to floats
+        for personExp in expMatrix:
+            for i in range(0,len(personExp)):
+                if personExp[i]=='null':
+                    personExp[i]=geneAvgs[i]
+                else:
+                    personExp[i]=float(personExp[i])
         return preprocessing.scale(numpy.array(expMatrix),axis=1) #normalize
+
+    def _getAvgNonNull(self,exp):
+        sumNonNull = sum(map(lambda x: 0.0 if x=='null' else float(x),exp))
+        numNonNull = sum(map(lambda x: 0.0 if x=='null' else 1.0,exp)) 
+        avg = sumNonNull/numNonNull      
+        return avg
 
     def get_labels(self): #as a list/array
         barcodeToLabels = {} #dict from barcode to label FIXME:do we want to keep track of this?

@@ -10,10 +10,19 @@ class Data:
         self.geneNames = []
         self.cellTypes = []#numbers
         self.cellNameToCellType = {}
+        self.cellTypeToCellName = {}
         self.isNormal = [] #boolean, is this array normal or not?
         self.arrayToCellType = {}
         self._make_arrayToCellType()
         self._make_cellTypes()
+        self._make_cellTypeToCellName()
+
+    def _make_cellTypeToCellName(self):#only call this if cellNameToCellType is already populated!
+        for name, ctype in self.cellNameToCellType.items():
+            self.cellTypeToCellName[ctype] = name
+   
+    def getCellName(self,cellType):
+        return(self.cellTypeToCellName[cellType])
 
     def get_gene_names(self):
         if not self.geneNames:
@@ -85,7 +94,9 @@ def test():
     #print(len(geneExp[0]))
     #print(geneExp[0].tolist())
     #print(geneExp[1])
-    #print(labels)
+    print([data.getCellName(label) for label in labels])
+
+
 
 if __name__=="__main__":
     test() 

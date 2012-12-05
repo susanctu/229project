@@ -84,8 +84,14 @@ def leaveOneOutCrossValid(X,Y,learningAlgo,names=None,selection='none',numFeatur
 	print actual
 	print zip(predictions,actual)
 	accuracy = numRight / (numRight + numWrong)
+	print accuracy
+	#displayConfusion(confusionMatrix(predictions,actual))
         return accuracy
 
+"""
+conf_array should like as follows:
+
+"""
 def displayConfusion(conf_arr):#taken from this stackoverflow post: http://stackoverflow.com/questions/2897826/confusion-matrix-with-number-of-classified-misclassified-instances-on-it-python
     norm_conf = []
     for i in conf_arr:

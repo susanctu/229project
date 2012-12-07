@@ -41,12 +41,12 @@ class Loader: #FIXME: make the classes for the testing data inherit from this
         return([self.cellTypeToCellName[cellType] for cellType in cellTypeList])
     
     def _make_cellTypeToCellName(self):#only call this if cellNameToCellType is already populated! overwritten by class for broad data
-    """sets things up for getCellName and getCellNames"""
+        """sets things up for getCellName and getCellNames"""
         for name, ctype in self.cellNameToCellType.items():
             self.cellTypeToCellName[ctype] = name
  
     def get_gene_names(self):
-    """returns gene names, same order they are in in the feature vector"""
+        """returns gene names, same order they are in in the feature vector"""
         if not self.geneNames:
             file = open(Loader.FILE_LOC + self.geneListFile,'r') 
             for line in file:
@@ -63,7 +63,7 @@ class Loader: #FIXME: make the classes for the testing data inherit from this
             if not lineParts[self.cellTypeIdx] in self.cellNameToCellType:
                 self.cellNameToCellType[lineParts[self.cellTypeIdx]]=numTypes
                 numTypes+=1
-            self.arrayToCellType[lineParts[0]]=self.cellNameToCellType[lineParts[self.cellTypeIdx]]
+            self.arrayToCellType[lineParts[0].rstrip(' ')]=self.cellNameToCellType[lineParts[self.cellTypeIdx]]#the rstrip here may seem weird, but if if I don't use it I can get extra space after the array name for ravi normal
         broadFile.close()
 
     def _make_cellTypes(self):
@@ -84,7 +84,6 @@ class Loader: #FIXME: make the classes for the testing data inherit from this
 
     def get_gene_exp_matrix(self):
         numNormal = sum(self.isNormal)#initialize to be number of normal arrays by 11927 to avoid growing/copying lists
-        print(numNormal)
         expMatrix = []
         for i in range(0,numNormal):
                 expMatrix.append([0]*Loader.NUM_GENES)
@@ -173,7 +172,7 @@ def testRaviNormal():
     geneExp = n.get_gene_exp_matrix()
     labels = n.get_labels()
     geneNames = n.get_gene_names()
-    print(labels)
+    print(n.getCellNames(labels))
     print(geneExp[0])
     print(geneExp[1])
     print(geneExp[2])
@@ -181,6 +180,6 @@ def testRaviNormal():
     print(len(geneExp[0]))
 
 if __name__=="__main__":
-    testBroad() 
+    #testBroad() 
     #testRaviAML()
-    #testRaviNormal()
+    testRaviNormal()

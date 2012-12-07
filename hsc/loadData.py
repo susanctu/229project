@@ -3,7 +3,14 @@ from sklearn import preprocessing
 import numpy
 
 class Loader: #FIXME: make the classes for the testing data inherit from this 
+   
+    """
+        This is class helps you load data and get gene expression matrices and labels, but is not meant to be directly used. 
+        See its subclasses. (Scroll down) 
     
+        Sorry, the naming is not so great here (e.g., isNormal is left over from when this method was only used for picking out the normal arrays from the Broad data set) because this was previously only used for Broad data.
+    """ 
+
     FILE_LOC = '../../hscData/' #see dropbox folder called hscData for files
     ARRAY_ID_LEN = 9
     NUM_GENES = 11927
@@ -25,18 +32,21 @@ class Loader: #FIXME: make the classes for the testing data inherit from this
         self._make_cellTypes()
         self._make_cellTypeToCellName()
 
-    def _make_cellTypeToCellName(self):#only call this if cellNameToCellType is already populated! overwritten by class for broad data
-        for name, ctype in self.cellNameToCellType.items():
-            self.cellTypeToCellName[ctype] = name
-   
+  
     def getCellName(self,cellType):
         return(self.cellTypeToCellName[cellType])   
 
     def getCellNames(self,cellTypeList):
         """Pass your predicted cell type lists to this method to get back the cell type names"""
         return([self.cellTypeToCellName[cellType] for cellType in cellTypeList])
+    
+    def _make_cellTypeToCellName(self):#only call this if cellNameToCellType is already populated! overwritten by class for broad data
+    """sets things up for getCellName and getCellNames"""
+        for name, ctype in self.cellNameToCellType.items():
+            self.cellTypeToCellName[ctype] = name
  
     def get_gene_names(self):
+    """returns gene names, same order they are in in the feature vector"""
         if not self.geneNames:
             file = open(Loader.FILE_LOC + self.geneListFile,'r') 
             for line in file:
@@ -44,7 +54,8 @@ class Loader: #FIXME: make the classes for the testing data inherit from this
             file.close()
         return(self.geneNames)        
 
-    def _make_arrayToCellType(self):#populates cellNameToCellType and arrayToCellType
+    def _make_arrayToCellType(self):
+        """populates cellNameToCellType and arrayToCellType"""
         broadFile = open(Loader.FILE_LOC + self.arrayToTypeFile)
         numTypes = 0
         for line in broadFile:
@@ -55,14 +66,15 @@ class Loader: #FIXME: make the classes for the testing data inherit from this
             self.arrayToCellType[lineParts[0]]=self.cellNameToCellType[lineParts[self.cellTypeIdx]]
         broadFile.close()
 
-    def _make_cellTypes(self): 
+    def _make_cellTypes(self):
+        """figures out which are the arrays that we want (i.e., the ones we have labels for) and makes the label vector"""
         file = open(Loader.FILE_LOC + self.expFile,'r')
         arrayNames = file.readline().rstrip('\n').split()
         for arrayName in arrayNames:
             shortName = arrayName[0:Loader.ARRAY_ID_LEN]
             if shortName in self.arrayToCellType:
-                  self.cellTypes.append(self.arrayToCellType[shortName])
-                  self.isNormal.append(True)
+                self.cellTypes.append(self.arrayToCellType[shortName])
+                self.isNormal.append(True)
             else:
                 self.isNormal.append(False)
         file.close()
@@ -80,7 +92,7 @@ class Loader: #FIXME: make the classes for the testing data inherit from this
         file = open(Loader.FILE_LOC + self.expFile,'r')
         lineNum = -1 
         for line in file:
-            if lineNum == -1:
+            if lineNum == -1:#this block corresponds to skipping the column names
                 lineNum = lineNum + 1
                 continue 
             line = line.rstrip('\n')

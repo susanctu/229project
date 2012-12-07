@@ -8,9 +8,6 @@ class Loader: #FIXME: make the classes for the testing data inherit from this
     ARRAY_ID_LEN = 9
     NUM_GENES = 11927
 
-    """Decided to hard-code this because had to modify classes a little by hand anyways, and need to be able to this same mapping for all data sets"""
-    BROAD_CELL_NAME_TO_TYPE = {0: 'BASO', 1: 'BCELLa1', 2: 'BCELLa2', 3: 'BCELLa3', 4: 'BCELLa4', 5: 'CMP', 6: 'DENDa1', 7: 'DENDa2', 8: 'EOS2', 9: 'ERY1', 10: 'ERY2', 11: 'ERY3', 11: 'ERY4', 11: 'ERY5', 12: 'GMP', 13: 'GRAN1', 14: 'GRAN2', 15: 'GRAN3', 16: 'HSC1', 17: 'HSC2', 18: 'MEGA1', 18: 'MEGA2', 18: 'MEP', 19: 'MONO1', 20: 'MONO2', 21: 'NKa1', 22: 'NKa2', 23: 'NKa3', 24: 'NKa4', 25: 'PRE_BCELL2', 26: 'PRE_BCELL3', 27: 'TCEL1', 28: 'TCEL2', 29: 'TCEL3', 30: 'TCEL4', 31: 'TCEL6', 32: 'TCEL7', 33: 'TCEL8'}
-
     def __init__(self,expFile,geneListFile,arrayToTypeFile,expectedNumArrays,cellTypeIdx=2):
         self.expFile = expFile
         self.geneListFile = geneListFile
@@ -28,13 +25,17 @@ class Loader: #FIXME: make the classes for the testing data inherit from this
         self._make_cellTypes()
         self._make_cellTypeToCellName()
 
-    def _make_cellTypeToCellName(self):#only call this if cellNameToCellType is already populated!
+    def _make_cellTypeToCellName(self):#only call this if cellNameToCellType is already populated! overwritten by class for broad data
         for name, ctype in self.cellNameToCellType.items():
             self.cellTypeToCellName[ctype] = name
    
     def getCellName(self,cellType):
-        return(self.cellTypeToCellName[cellType])
+        return(self.cellTypeToCellName[cellType])   
 
+    def getCellNames(self,cellTypeList):
+        """Pass your predicted cell type lists to this method to get back the cell type names"""
+        return([self.cellTypeToCellName[cellType] for cellType in cellTypeList])
+ 
     def get_gene_names(self):
         if not self.geneNames:
             file = open(Loader.FILE_LOC + self.geneListFile,'r') 
@@ -101,6 +102,10 @@ def test():
     labels = data.get_labels()
     geneNames = data.get_gene_names()
 
+"""
+    WARNING!: The three subclasses below all keep track of their own int -> cell type mappings (i.e., for RaviAML, 0 might be BM_CMP_BM_NBM07, but for Broad, 0 is BASO), so if you train with dataset A and try to classify with dataset B, you should use A's getCellNames method to get back the names of your predicted classes.
+"""
+
 class RaviAML(Loader):
     def __init__(self):
         Loader.__init__(self,"raviArrays.txt","genes.txt","raviAMLArrayList.txt",54,cellTypeIdx=1) 
@@ -112,6 +117,20 @@ class RaviNormal(Loader):
 class Data(Loader):
     def __init__(self):
         Loader.__init__(self,"expression.txt","genes.txt","BroadArrayList.txt",5897,cellTypeIdx=2) 
+
+    def _make_arrayToCellType(self):
+        self.cellNameToCellType = {'DENDa2': 7, 'NKa2': 22, 'DENDa1': 6, 'TCEL1': 27, 'BCELLa2': 2, 'BCELLa3': 3, 'TCEL3': 29, 'ERY3-5': 11, 'ERY2': 10, 'TCEL4': 30, 'BCELLa4': 4, 'ERY1': 9, 'GRAN3': 15, 'GRAN2': 14, 'GRAN1': 13, 'BCELLa1': 1, 'NKa1': 21, 'TCEL7': 32, 'CMP': 5, 'PRE_BCELL2': 25, 'PRE_BCELL3': 26, 'EOS2': 8, 'HSC2': 17, 'HSC1': 16, 'TCEL6': 31, 'BASO': 0, 'GMP': 12, 'TCEL2': 28, 'TCEL8': 33, 'MONO2': 20, 'NKa3': 23, 'MONO1': 19, 'MEGA_MEP': 18, 'NKa4': 24}
+        
+        file = open(Loader.FILE_LOC + self.arrayToTypeFile)
+        for line in file:
+            lineParts = line.rstrip('\n').split('\t')
+            cellName = lineParts[self.cellTypeIdx]
+            if cellName in ['ERY3','ERY4','ERY5']:
+                cellName = 'ERY3-5'
+            elif cellName in ['MEGA1','MEGA2','MEP']:
+                cellName = 'MEGA_MEP'
+            self.arrayToCellType[lineParts[0]]=self.cellNameToCellType[cellName]
+        file.close()
 
 def testBroad():
     data = Data()

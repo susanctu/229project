@@ -17,12 +17,26 @@ class Data:
         self._make_cellTypes()
         self._make_cellTypeToCellName()
 
+
     def _make_cellTypeToCellName(self):#only call this if cellNameToCellType is already populated!
         for name, ctype in self.cellNameToCellType.items():
             self.cellTypeToCellName[ctype] = name
    
     def getCellName(self,cellType):
         return(self.cellTypeToCellName[cellType])
+
+    def indices_of_celltype(self,celltype_id):
+  	value = celltype_id
+	qlist = self.get_labels().tolist()
+    	indices = []
+    	idx = -1
+    	while True:
+        	try:
+            		idx = qlist.index(value, idx+1)
+            		indices.append(idx)
+        	except ValueError:
+            		break
+    	return(indices)
 
     def get_gene_names(self):
         if not self.geneNames:
@@ -56,6 +70,7 @@ class Data:
         file.close()
  
     def get_labels(self):
+	#self.cellTypes = self.cellTypes[1:28]+self.cellTypes[30:]	
         return(numpy.array(self.cellTypes))
 
     def get_gene_exp_matrix(self):
@@ -73,7 +88,7 @@ class Data:
             line = line.rstrip('\n')
             lineParts = line.split('\t')
             #print(len(lineParts))
-            assert(len(lineParts)==1841)#check that for this gene we have data from 1841 arrays
+            #assert(len(lineParts)==1841)#check that for this gene we have data from 1841 arrays
             normalLineParts =[]
             for i in range(0,len(lineParts)):
                 if self.isNormal[i]:
@@ -82,7 +97,7 @@ class Data:
                 expMatrix[i][lineNum]=float(normalLineParts[i])
             lineNum = lineNum +1
         file.close()
-        #print(expMatrix)
+	#expMatrix = expMatrix[1:28] + expMatrix[30:]
         return preprocessing.scale(numpy.array(expMatrix),axis=1) #normalize
          
 def test():

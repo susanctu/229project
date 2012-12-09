@@ -3,8 +3,8 @@ from sklearn.feature_selection import SelectKBest
 from sklearn.feature_selection import chi2
 import numpy
 from loadData import Data
-import pylab
-import matplotlib.pyplot as plt
+#import pylab
+#import matplotlib.pyplot as plt
 
 """This file contains useful functions for testing/evaluating different learning algorithms"""
 

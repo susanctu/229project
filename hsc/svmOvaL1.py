@@ -9,14 +9,17 @@ from testUtils import leaveOneOutCrossValid
 import numpy
 from sklearn.multiclass import OneVsOneClassifier
 from sklearn.multiclass import OneVsRestClassifier
-
-#TODO DOING FEATURE SELECTION ON ALL DATA, SO RESULTING ACCURACY DOES NOT REFLECT REAL PREDICTION POWER
+import itertools
 
 """
 param featureSelectionMethod: pass in a string, passes it on into the methods in testUtils (currently supports 'chi2','random') - default is 'none'
 calls an svm with C =
 
 """
+
+def addlists(xs,ys):
+     return list(x + y for x, y in itertools.izip(xs, ys))
+
 def svmfn(featureSelectionMethod = 'none',numFeatures = '330'):
     data = Data()
     gene_exp = data.get_gene_exp_matrix()
@@ -27,12 +30,39 @@ def svmfn(featureSelectionMethod = 'none',numFeatures = '330'):
     accuracy = leaveOneOutCrossValid(gene_exp,labels,clfwrapper,names=names,selection=featureSelectionMethod,numFeatures=numFeatures)     
     print 'accuracy is'
     print accuracy
-    print clfwrapper.get_params(deep=True) #not sure what this does?
-   
+    estimators = clfwrapper.estimators_
+    j = 0 
+    for estimator in estimators:
+	print 'estimator for class'
+	print data.getCellName(j)
+	i = range(0,len(estimator.coef_[0]))
+	b = sorted(zip(estimator.coef_[0], i), reverse=True)[:80] #TODO CHANGE
+	indices = data.indices_of_celltype(j)
+	print 'indices of this class:'
+	print indices
+	arraysum = [0.0]*11927
+	for i in indices:
+		print 'adding gene exp'
+		print gene_exp[i]
+		arrayssum = addlists(arraysum,gene_exp[i])
+		print 'arraysum is now'
+		print arraysum
+	print 'arraysum is '
+	print arraysum
+	arrayavg =  [x/len(indices) for x in arraysum]
+	k = 0
+	geneList = []
+	while k<80  and  b[k][0] > 0.0000000000000001 : #TODO CHANGE
+		avg_expr = arrayavg[b[k][1]]
+		geneStr = names[b[k][1]] + ':' +  str(avg_expr)
+		geneList = geneList + [geneStr]
+		k = k+1
+	j = j+1
+	print geneList
 	
 if __name__=="__main__":
 	svmfn()
-	#svmfn('chi2',numFeatures = 20)
+	#svmfn('chi2',numFeatures = 10)
 	#svmfn('random')
 	"""
 	basicFeatureSelection = True #Uses all features if false, forward feature selection using chi2 if true

@@ -38,17 +38,17 @@ def svmfn(featureSelectionMethod = 'none',numFeatures = '330'):
 	i = range(0,len(estimator.coef_[0]))
 	b = sorted(zip(estimator.coef_[0], i), reverse=True)[:80] #TODO CHANGE
 	indices = data.indices_of_celltype(j)
-	print 'indices of this class:'
-	print indices
+	#print 'indices of this class:'
+	#print indices
 	arraysum = [0.0]*11927
 	for i in indices:
-		print 'adding gene exp'
-		print gene_exp[i]
+		#print 'adding gene exp'
+		#print gene_exp[i]
 		arrayssum = addlists(arraysum,gene_exp[i])
-		print 'arraysum is now'
-		print arraysum
-	print 'arraysum is '
-	print arraysum
+		#print 'arraysum is now'
+		#print arraysum
+	#print 'arraysum is '
+	#print arraysum
 	arrayavg =  [x/len(indices) for x in arraysum]
 	k = 0
 	geneList = []
@@ -58,7 +58,7 @@ def svmfn(featureSelectionMethod = 'none',numFeatures = '330'):
 		geneList = geneList + [geneStr]
 		k = k+1
 	j = j+1
-	print geneList
+	#print geneList
 	
 if __name__=="__main__":
 	svmfn()

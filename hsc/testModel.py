@@ -43,7 +43,7 @@ def classifyWithBest1vsAll(trainData,testData):
     test_X = testData.get_gene_exp_matrix()
     test_y = testData.get_labels()
 
-    bestSvm = LinearSVC(C=125,penalty='l1',dual=False)
+    bestSvm = LinearSVC(C=125,penalty='l1',dual=False,class_weight='auto')
     predictions = OneVsRestClassifier(bestSvm).fit(train_X,train_y).predict(test_X)
     print("predictions:")
     print(trainData.getCellNames(predictions))
@@ -55,29 +55,31 @@ def classifyWithBest1vsAll(trainData,testData):
 def classifyRaviNormal():
     b = Data()
     n = RaviNormal()
-    classifyWithBest1vs1(b,n) 
+    classifyWithBest1vsAll(b,n) 
 
 def classifyRaviAML():
     b = Data()
     aml = RaviAML()
-    classifyWithBest1vs1(b,aml)
+    classifyWithBest1vsAll(b,aml)
 
 def classifyAMLEasy():
     b = Data()
     amlEasy = AML_easy()
-    classifyWithBestECOC(b,amlEasy) 
+    classifyWithBest1vsAll(b,amlEasy) 
 
 def classifyH60():
     b = Data()
     h = GSE_H60()
-    classifyWithBestECOC(b,h) 
+    classifyWithBest1vsAll(b,h) 
 
 def classifyK562():
     b = Data()
     k = GSE_K562()
-    classifyWithBestECOC(b,k) 
+    classifyWithBest1vsAll(b,k) 
 
 if __name__=="__main__":
+    classifyRaviAML()
+    classifyRaviNormal()
     classifyAMLEasy()
     classifyH60()
     classifyK562()

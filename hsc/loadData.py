@@ -32,6 +32,9 @@ class Loader: #FIXME: make the classes for the testing data inherit from this
         self._make_cellTypeToCellName()
         
 
+    def getCellID(self,cellName):
+        return(self.cellNameToCellType[cellName])
+
     def getCellName(self,cellType):
         return(self.cellTypeToCellName[cellType])   
 
@@ -72,6 +75,7 @@ class Loader: #FIXME: make the classes for the testing data inherit from this
         numTypes = 0
         for line in broadFile:
             lineParts = line.rstrip('\n').split()
+            print(lineParts)
             if not lineParts[self.cellTypeIdx] in self.cellNameToCellType:
                 self.cellNameToCellType[lineParts[self.cellTypeIdx]]=numTypes
                 numTypes+=1
@@ -156,7 +160,7 @@ class RaviNormal(Loader):
 
 class HardClasses(Loader):#MEP, CMP, GMP  
     def __init__(self):
-        Loader.__init__(self,"expression.txt","genes.txt","hardClasses.txt",5897,cellTypeIdx=2) 
+        Loader.__init__(self,"expression.txt","genes.txt","hardClasses.txt",5897,cellTypeIdx=1) 
     
 class Data(Loader):
     def __init__(self):

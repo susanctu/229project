@@ -43,8 +43,6 @@ def leaveOneOutCrossValid(X,Y,learningAlgo,names=None,selection='none',numFeatur
 	    	X_train, X_test = [X[i] for i in train_index], [X[i] for i in test_index]
 	    	y_train, y_test = [Y[i] for i in train_index], [Y[i] for i in test_index]
     		if(selection=='chi2'):
-			numFeatures = len(X_train[0])
-			numExamples = len(y_train)
 			fs = SelectKBest(chi2,k=numFeatures)
 			fs.fit(numpy.array(X)*1000,Y)
 			indices =  fs.get_support() #I think this gives you a bit mask of which features you want
@@ -80,7 +78,7 @@ def leaveOneOutCrossValid(X,Y,learningAlgo,names=None,selection='none',numFeatur
 	print predictions
 	print 'actual:'
 	print actual
-#	print zip(predictions,actual)
+	print zip(predictions,actual)
 	accuracy = numRight / (numRight + numWrong)
 	print accuracy
 	#displayConfusion(confusionMatrix(predictions,actual))

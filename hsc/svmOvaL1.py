@@ -3,7 +3,7 @@ from sklearn import cross_validation
 from sklearn.feature_selection import SelectKBest
 from sklearn.feature_selection import chi2
 from testUtils import evaluateClassifications
-from loadData import Data
+from loadData import RaviNormal,RaviAML,AML_easy,GSE_H60,GSE_K562,Data
 #from testUtils import kFoldCrossValid
 from testUtils import leaveOneOutCrossValid
 import numpy
@@ -22,9 +22,11 @@ def addlists(xs,ys):
 
 def svmfn(featureSelectionMethod = 'none',numFeatures = '330'):
     data = Data()
+    #data = RaviNormal()
     gene_exp = data.get_gene_exp_matrix()
     labels = data.get_labels()
     names = data.get_gene_names()
+    #clf = svm.LinearSVC(C=125.,penalty="l1",dual=False,class_weight='auto')
     clf = svm.LinearSVC(C=125.,penalty="l1",dual=False)
     clfwrapper = OneVsRestClassifier(clf);
     accuracy = leaveOneOutCrossValid(gene_exp,labels,clfwrapper,names=names,selection=featureSelectionMethod,numFeatures=numFeatures)     
@@ -33,23 +35,18 @@ def svmfn(featureSelectionMethod = 'none',numFeatures = '330'):
     estimators = clfwrapper.estimators_
     j = 0 
     for estimator in estimators:
-	print 'estimator for class'
-	print data.getCellName(j)
+	#print 'estimator for class'
+	#print data.getCellName(j)
 	i = range(0,len(estimator.coef_[0]))
 	b = sorted(zip(estimator.coef_[0], i), reverse=True)[:80] #TODO CHANGE
 	indices = data.indices_of_celltype(j)
-	print 'indices of this class:'
-	print indices
+	#print 'indices of this class:'
+	#print indices
 	arraysum = [0.0]*11927
+	arraysum = numpy.array(arraysum)
 	for i in indices:
-		print 'adding gene exp'
-		print gene_exp[i]
-		arrayssum = addlists(arraysum,gene_exp[i])
-		print 'arraysum is now'
-		print arraysum
-	print 'arraysum is '
-	print arraysum
-	arrayavg =  [x/len(indices) for x in arraysum]
+		arraysum = numpy.add(arraysum,gene_exp[i])
+	arrayavg = numpy.divide(arraysum,len(indices))
 	k = 0
 	geneList = []
 	while k<80  and  b[k][0] > 0.0000000000000001 : #TODO CHANGE
@@ -58,7 +55,7 @@ def svmfn(featureSelectionMethod = 'none',numFeatures = '330'):
 		geneList = geneList + [geneStr]
 		k = k+1
 	j = j+1
-	print geneList
+	#print geneList
 	
 if __name__=="__main__":
 	svmfn()

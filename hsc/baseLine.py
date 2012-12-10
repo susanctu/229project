@@ -8,6 +8,7 @@ from loadData import Data
 from testUtils import leaveOneOutCrossValid
 import numpy
 from sklearn.multiclass import OneVsOneClassifier
+from sklearn.multiclass import OneVsRestClassifier
 
 #TODO DOING FEATURE SELECTION ON ALL DATA, SO RESULTING ACCURACY DOES NOT REFLECT REAL PREDICTION POWER
 
@@ -16,21 +17,21 @@ param featureSelectionMethod: pass in a string, passes it on into the methods in
 calls an svm with C =
 
 """
-def svmfn(featureSelectionMethod = 'none',numFeatures = '330'):
+def svmfn(featureSelectionMethod = 'none',numFeaturesA = '330'):
     data = Data()
     gene_exp = data.get_gene_exp_matrix()
     labels = data.get_labels()
     names = data.get_gene_names()
     #USES a 1 vs 1 scheme - how does this work?
-    clf = svm.SVC(C=50.,kernel='linear') #kernel can be poly, rbf, linear, sigmoid
+    clf = svm.SVC(C=155.,kernel='linear') #kernel can be poly, rbf, linear, sigmoid
     #accuracy = kFoldCrossValid(gene_exp,labels,OneVsOneClassifier(clf),k=4,names=names,selection=featureSelectionMethod)     
-    accuracy = leaveOneOutCrossValid(gene_exp,labels,OneVsOneClassifier(clf),names=names,selection=featureSelectionMethod,numFeatures=numFeatures)     
+    accuracy = leaveOneOutCrossValid(gene_exp,labels,OneVsOneClassifier(clf),names=names,selection=featureSelectionMethod,numFeatures=numFeaturesA)     
     print 'accuracy is'
     print accuracy
 	
 if __name__=="__main__":
 	#svmfn()
-	svmfn('chi2')
+	svmfn('chi2',numFeaturesA=900)
 	#svmfn('random')
 	"""
 	basicFeatureSelection = True #Uses all features if false, forward feature selection using chi2 if true

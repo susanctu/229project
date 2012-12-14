@@ -19,7 +19,7 @@
             \texttt{@stanford.edu}
 }
 \date{\today}
-\documentclass[11pt]{article}
+\documentclass[10.75pt]{article}
 %\documentclass{acmconf}
 %\usepackage[pdftex]{graphicx}
 %\usepackage[paper=a4paper,dvips,top=2cm,left=1.5cm,right=1.5cm,
@@ -29,6 +29,9 @@
 \usepackage{multicol}
 \usepackage[pdftex]{graphicx}
 \usepackage[english]{babel}
+\usepackage{sidecap}
+\usepackage[font=small,labelfont=bf]{caption}
+
 %----------------------------------------------------------
 
 \makeatletter
@@ -85,30 +88,34 @@ Multiclass classifiers fall into roughly two types: extensions of binary classif
 
 \subsubsection{Adjusting class-weights}
 In the standard SVM framework each class is weighed equally. Since we are worse at classifying cells that are infrequent in our training set, we tried adjusting weights on the penalty term of the SVM to be inversely proportional to class frequencies. This would cause our classifier to sacrifice confidence on most classes with hopes of improving classification of the rare classes. We thought that such sacrifice could be worth it since our classifier did very well on the prevalent classes. We found that this (slightly) decreased our leave-one-out cross- validation performance.
-
-
-
 \subsection{Results \& Discussion}
-Initially we repeatedly ran SVM with all 38 classes distinguished and varied kernel, C, feature selection and generalization method. We found that the optimal choice was linear kernel, C = 125, L1 regularization (which automatically determines the number of features) and one-vs-all. This led to 78.6\% accuracy with leave-one-out cross-validation. Here we observed that the most common misclassifications were ERY2, ERY3 and ERY4 mapping to each other, so we turned these 3 categories into a single one. This means we are assuming that the information in our dataset is not enough to distinguish them or that they are too biologically similar. We did the same with MEGA1 and MEGA2. This results in 35 classes. Accuracy rose to 86.2\%. \cite{zhang} reported no more than 68\% for their dataset with 14 classes, the highest number of classes they worked with.\\\\
-	We then tried to use our classifier on a test set. On two 6-array test sets, we were able to identify granulocytes correctly with our best-performing (as determined through cross-validation on the 211-array data set) one-vs-one SVM. We also attempted to classify a 27-array test set of early progenitors (TODO ADD BIO CONTEXT) by using a two stage classification. We classified all the cells using our best one-vs-all SVM. Then, we selected out all the cells classified as any one of the five early progenitors (HSCs, MEPs, CMPs, GMPs). Finally, we used a one-vs-all SVM trained on only the early progenitor cells. We opted for a two-layer approach because our initial classifier was particularly deficient in classifying early progenitors. Six of the classifications were exactly correct, and 13 others were close (i.e. no more than one cell type away in the lineage (TODO ADD WHAT THIS IS / ADD PICTURE?)), where 8 of those 13 were cell-types not present in the 211-array test set (and therefore could not have been classified exactly correctly).\\\\\\\\\\\\ %these spaces are here bc of vertical alignment
+\begin{figure*}[t]
+\centering
+ \includegraphics[width=160mm]{differentiation.jpg}
+ \caption{Hematopoeitic Cell Differentiation. Black indicates early progenitors that were in our 211-array training set. Pink indicates early progenitors that were present only in a test set. Blue indicates all other cells present in our training set. HSC: hematopoeitic stem cell; MPP: late multipotent progenitor; CMP: common myeloid progenitor; MEP: megakaryocyte/erythroid progenitor; ERY: erythrocyte; MEGA: megakaryocytes; GMP: granulocyte/monocyte progenitor; GRAN:  granulocyte; MONO: monocyte; EOS2: eosinophil; BASO:  basophil; DEND: dendritic; PRE-BCELL: early or pro-B cell; BCELL: naive, mature, able to switch, or switched B-cell; NK: natural killer; TCELL: T-cells.}
+\end{figure*}
+Initially we repeatedly ran SVM with all 38 classes distinguished and varied kernel, C, feature selection and generalization method. We found that the optimal choice was linear kernel, C = 125, L1 regularization (which automatically determines the number of features) and one-vs-all. This led to 78.6\% accuracy with leave-one-out cross-validation. Here we observed that the most common misclassifications were ERY2, ERY3 and ERY4 mapping to each other, so we turned these 3 categories into a single one. This means we are assuming that the information in our dataset is not enough to distinguish them or that they are too biologically similar. We did the same with MEGA1 and MEGA2. This results in 35 classes. Accuracy rose to 86.2\%. \cite{zhang} reported no more than 68\% for their dataset with 14 classes, the highest number of classes they worked with.\\\\	
+	We then tried to use our classifier on a test set. On two 6-array test sets, we were able to identify granulocytes correctly with our best-performing (as determined through cross-validation on the 211-array data set) one-vs-one SVM. We also attempted to classify a 27-array test set of early progenitors (TODO ADD BIO CONTEXT) by using a two stage classification. We classified all the cells using our best one-vs-all SVM. Then, we selected out all the cells classified as any one of the five early progenitors (HSCs, MEPs, CMPs, GMPs). Finally, we used a one-vs-all SVM trained on only the early progenitor cells. We opted for a two-layer approach because our initial classifier was particularly deficient in classifying early progenitors. Six of the classifications were exactly correct, and 13 others were close (i.e. no more than one cell type away in the lineage (TODO ADD WHAT THIS IS / ADD PICTURE?)), where 8 of those 13 were cell-types not present in the 211-array test set (and therefore could not have been classified exactly correctly).
 
 \begin{figurehere}
- \centering
- \includegraphics[width=100mm]{graph.jpg}
+ \includegraphics[width=70mm]{graph.jpg}
+ 
  \caption{Results}
 \end{figurehere}	
 
 \begin{figurehere}
- \centering
- \includegraphics[width=110mm]{confusionmatrix.jpg}
+ \hspace*{-10mm}
+  \centerline{
+\includegraphics[width=90mm]{confusionmatrix.jpg}}
  \caption{Confusion Matrix for OvA SVM. X-axis is predicted,Y-axis is actual}
 \end{figurehere}	
 
 \subsection{Relevance and interpretation}
 \cite{novershtern} groups the 38 classes into 5 larger classes in order to get gene signatures. Since our classifier consistently classifies 21 classes with no false negatives, we were able to retrieve gene signatures for all of these by looking at the genes picked by feature selection by the respective classifier (one for each cell, as in one-vs-all). Some of the gene expressions in our gene signatures were as far as 2 standard deviations away from the mean (standard deviation and mean computed over all classes). The size of the gene signatures (determined by L1 regularization) ranges from 8 to 53 genes and averages to 26. Random sets of 30 genes give an average 30\% accuracy on leave-one-out cross-validation (against 86.2\% for our selected genes), which gives credibility to our signatures.
-The following classes are predicted with no false negatives (and hence provide reasonable gene signatures): BASO, BCELLa1, BCELLa2, BCELLa3, BCELLa4, DENDa1, DENDa2, ERY3-5 (a single cluster), GRAN1, GRAN3, HSC1, MEGA1-2 (a single cluster), NKa1, NKa2, NKa3, TCEL2, TCEL3, TCEL4, TCEL5, TCEL6, TCEL7, TCEL8.
-%\begin{tablehere}
+The following classes are predicted with no false negatives (and hence provide reasonable gene signatures): BASO, BCELLa1, BCELLa2, BCELLa3, BCELLa4, DENDa1, DENDa2, ERY3-5 (a single cluster), GRAN1, GRAN3, HSC1, MEGA1-2 (a single cluster), NKa1, NKa2, NKa3, TCEL2, TCEL3, TCEL4, TCEL5, TCEL6, TCEL7, TCEL8.\\
 
+\begin{tablehere}
+\centering
 \begin{tabular}{ | l | l | l | }
  \hline
 Weight & Gene & Expression \\ \hline
@@ -121,12 +128,10 @@ Weight & Gene & Expression \\ \hline
 0.06 & ZBTB1 & 1.32\\ \hline
 0.05 & TRAJ28 & 0.67\\ \hline
 \end{tabular}
-
-%\end{tablehere}
-BCELLa2
-
-
-	The following have particularly high number of false negatives: CMP, ERY1, GMP, TCEL1.
+ \caption{Gene signature for BCELLa2}
+\end{tablehere}
+\vspace{3 mm}
+The following have particularly high number of false negatives: CMP, ERY1, GMP, TCEL1.
 TODO: -> Indicates large within-individual variation of gene expression along differentiation
 TODO: -> impaired or blocked hematopoietic differentiation is a defining characteristic of leukemia
 

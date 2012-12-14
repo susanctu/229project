@@ -29,7 +29,8 @@ def learnWithSVM(trainingData,trainingLabels,testData,testLabels,numFeatures):
 	
 if __name__=="__main__":
 	#svmfn()
-	svmfn('chi2')
+	#svmfn('chi2')
+	svmfn('random')
 	"""
 	basicFeatureSelection = True #Uses all features if false, forward feature selection using chi2 if true
 	#just checking

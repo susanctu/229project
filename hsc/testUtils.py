@@ -17,6 +17,62 @@ def print_genes_nonzero_coeff(data,coeffs):#data should be a TCGAData object
             nonzeroNames.append(names[i])
     return nonzeroNames
 
+def trainingSetPerformance(X,y,learningAlgo,names=None,selection='none',numFeatures = 330):#learningAlgo is an object, not a function! and assumes that X and Y are already numpy.arrays 
+
+	print 'numFeatures is:'
+	print numFeatures
+        """
+	TODO CHANGE THIS
+        Expects matrix with feature vectors, labels, a learning algorithm, and (optionally) k and a feature selection method. Currently supporting 'chi2' and 'none' and 'random'.
+        The learning algorithm needs to have a "fit" method that takes matrix with feature vectors and labels
+        and a predict method that takes in just one feature vector and returns a list (of length 1) with the prediction
+        (The fact that a list rather than a single value is returned is just due to the fact that that's what sklearn's 
+        learning algorithms' predict functions do.)
+
+        Returns list with accuracies.
+        """
+#	print 'num samples??'
+#	print len(X)
+	numRight = 0.0
+	numWrong = 0
+	predictions = []
+	actual = []
+    	if(selection=='chi2'):
+			fs = SelectKBest(chi2,k=numFeatures)
+			fs.fit(numpy.array(X)*1000,y)
+			indices =  fs.get_support() #I think this gives you a bit mask of which features you want
+			X = numpy.array(X)
+			X = X[:,indices]
+    	elif selection=='random':
+			print 'random!!'
+			totalNumFeatures = len(X[0])
+			numExamples = len(y)
+			indices = numpy.random.randint(0,totalNumFeatures-1,numFeatures)
+			names =numpy.array(names)
+			X = numpy.array(X)
+			X = X[:,indices]
+	learningAlgo.fit(numpy.array(X),numpy.array(y))
+	i=0
+	for x_vec in X:
+		p = learningAlgo.predict(x_vec)[0]
+		print 'we predict:'
+		print p
+		print 'the actual result:'
+		print y[i] 
+		predictions.append(p)
+		if p == y[i]: numRight+=1
+		else: numWrong+=1
+		i+=1
+	print 'predictions:'
+	print predictions
+	print 'actual:'
+	print y
+	print zip(predictions,actual)
+	accuracy = numRight / (numRight + numWrong)
+	print accuracy
+	#displayConfusion(confusionMatrix(predictions,actual))
+        return accuracy
+
 def leaveOneOutCrossValid(X,Y,learningAlgo,names=None,selection='none',numFeatures = 330):#learningAlgo is an object, not a function! and assumes that X and Y are already numpy.arrays 
 
 	print 'numFeatures is:'
@@ -54,9 +110,9 @@ def leaveOneOutCrossValid(X,Y,learningAlgo,names=None,selection='none',numFeatur
 			X_test = X_test[:,indices]
     		elif selection=='random':
 			print 'random!!'
-			numFeatures = len(X_train[0])
+			numTotalFeatures = len(X_train[0])
 			numExamples = len(y_train)
-			indices = numpy.random.randint(0,numFeatures-1,50)
+			indices = numpy.random.randint(0,numTotalFeatures-1,numFeatures)
 			names =numpy.array(names)
 			print names[indices]
 			X_train = numpy.array(X_train)

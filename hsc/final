@@ -72,13 +72,13 @@ We found out that this problem is very easy to solve. Naive Bayes, which operate
 \begin{tabular}{ | l | l | l | }
  \hline
     Method & Precision & Recall\\
-  \hline
-Naive Bayes & 99\% & 99\% \\  \hline
-Logistic Regression with L1 & 99\% & 100\% \\  \hline
-SVM with Chi2 & 99\% & 100\% \\  \hline
-Backwards Selection & 99\% & 100\% \\  \hline
+  \hline 
+Naive Bayes & 99\% & 99\% \\  \hline 
+Logistic Regression with L1 & 99\% & 100\% \\  \hline 
+SVM with Chi2 & 99\% & 100\% \\  \hline 
+Backwards Selection & 99\% & 100\% \\  \hline 
 SVM with Random 50 Genes & 91\% & 100\% \\  \hline 
-
+>>>>>>> 4832037e56f05f81dc33266d45806dce3dd4b9a9
   \hline
 \end{tabular}
 

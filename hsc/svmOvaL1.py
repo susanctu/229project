@@ -6,6 +6,7 @@ from testUtils import evaluateClassifications
 from loadData import RaviNormal,RaviAML,AML_easy,GSE_H60,GSE_K562,Data
 #from testUtils import kFoldCrossValid
 from testUtils import leaveOneOutCrossValid
+from testUtils import trainingSetPerformance
 import numpy
 from sklearn.multiclass import OneVsOneClassifier
 from sklearn.multiclass import OneVsRestClassifier
@@ -27,16 +28,20 @@ def svmfn(featureSelectionMethod = 'none',numFeatures = '330'):
     labels = data.get_labels()
     names = data.get_gene_names()
     #clf = svm.LinearSVC(C=125.,penalty="l1",dual=False,class_weight='auto')
-    clf = svm.LinearSVC(C=125.,penalty="l1",dual=False)
+    clf = svm.LinearSVC(C=125,penalty="l1",dual=False)
     clfwrapper = OneVsRestClassifier(clf);
-    accuracy = leaveOneOutCrossValid(gene_exp,labels,clfwrapper,names=names,selection=featureSelectionMethod,numFeatures=numFeatures)     
+    #accuracy = leaveOneOutCrossValid(gene_exp,labels,clfwrapper,names=names,selection=featureSelectionMethod,numFeatures=numFeatures)     
+    trainingError =trainingSetPerformance(gene_exp,labels,clfwrapper,names=names,selection=featureSelectionMethod,numFeatures=numFeatures)     
     print 'accuracy is'
-    print accuracy
+    #print accuracy
+    print 'trainingError is'
+    print trainingError
     estimators = clfwrapper.estimators_
     j = 0 
+    totalGeneListLength = 0
     for estimator in estimators:
-	#print 'estimator for class'
-	#print data.getCellName(j)
+	print 'estimator for class'
+	print data.getCellName(j)
 	i = range(0,len(estimator.coef_[0]))
 	b = sorted(zip(estimator.coef_[0], i), reverse=True)[:80] #TODO CHANGE
 	indices = data.indices_of_celltype(j)
@@ -49,13 +54,18 @@ def svmfn(featureSelectionMethod = 'none',numFeatures = '330'):
 	arrayavg = numpy.divide(arraysum,len(indices))
 	k = 0
 	geneList = []
-	while k<80  and  b[k][0] > 0.0000000000000001 : #TODO CHANGE
+	while k<80 and b[k][0] > 0: #TODO CHANGE
 		avg_expr = arrayavg[b[k][1]]
-		geneStr = names[b[k][1]] + ':' +  str(avg_expr)
+		geneStr = str(b[k][0])+',' +names[b[k][1]] + ':' +  str(avg_expr)
 		geneList = geneList + [geneStr]
 		k = k+1
 	j = j+1
-	#print geneList
+	print geneList
+	print len(geneList)
+	totalGeneListLength  += len(geneList)
+    print 'avg gene signature size:'
+    print totalGeneListLength/35
+    
 	
 if __name__=="__main__":
 	svmfn()

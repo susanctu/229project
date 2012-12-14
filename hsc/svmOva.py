@@ -6,6 +6,7 @@ from testUtils import evaluateClassifications
 from loadData import Data
 #from testUtils import kFoldCrossValid
 from testUtils import leaveOneOutCrossValid
+from testUtils import trainingSetPerformance
 import numpy
 from sklearn.multiclass import OneVsOneClassifier
 from sklearn.multiclass import OneVsRestClassifier
@@ -22,15 +23,18 @@ def svmfn(featureSelectionMethod = 'none',numFeatures = '330'):
     gene_exp = data.get_gene_exp_matrix()
     labels = data.get_labels()
     names = data.get_gene_names()
-    clf = svm.LinearSVC(C=50.)#kernel can be poly, rbf, linear, sigmoid
+    clf = svm.LinearSVC(C=125.)#kernel can be poly, rbf, linear, sigmoid
     accuracy = leaveOneOutCrossValid(gene_exp,labels,OneVsRestClassifier(clf),names=names,selection=featureSelectionMethod,numFeatures=numFeatures)     
     print 'accuracy is'
     print accuracy
+    trainingError = trainingSetPerformance(gene_exp,labels,OneVsRestClassifier(clf),names=names,selection=featureSelectionMethod,numFeatures=numFeatures)     
+    print 'trainingSetPerformance is'
+    print trainingError
 	
 if __name__=="__main__":
 	#svmfn()
-	svmfn('chi2',numFeatures = 30)
-	#svmfn('random')
+	#svmfn('chi2',numFeatures = 30)
+	svmfn('random',numFeatures = 900)
 	"""
 	basicFeatureSelection = True #Uses all features if false, forward feature selection using chi2 if true
 	#just checking

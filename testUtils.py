@@ -47,6 +47,17 @@ def kFoldCrossValid(X,Y,learningAlgo,k=4,names=None,selection='none'):#learningA
 			X_train = X_train[:,indices]
 			X_test = numpy.array(X_test)
 			X_test = X_test[:,indices]
+    		elif selection=='random':
+			print 'random!!'
+			numFeatures = len(X_train[0])
+			numExamples = len(y_train)
+			indices = numpy.random.randint(0,numFeatures-1,50)
+			names =numpy.array(names)
+			print names[indices]
+			X_train = numpy.array(X_train)
+			X_train = X_train[:,indices]
+			X_test = numpy.array(X_test)
+			X_test = X_test[:,indices]
 		learningAlgo.fit(X_train,y_train)
                 predictions = []
                 for x_vec in X_test:

@@ -212,6 +212,11 @@ def testRaviNormal():
     print(len(geneExp[0]))
 
 if __name__=="__main__":
-    testBroad() 
-    testRaviAML()
+	n = Data()
+	i=0
+	for st in n.getCellNames(range(0,35)):
+		print str(i)+':'+st
+		i+=1
+    #testBroad() 
+    #testRaviAML()
     #testRaviNormal()

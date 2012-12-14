@@ -136,7 +136,7 @@ def test():
     geneNames = data.get_gene_names()
 
 """
-    WARNING!: The three subclasses below all keep track of their own int -> cell type mappings (i.e., for RaviAML, 0 might be BM_CMP_BM_NBM07, but for Broad, 0 is BASO), so if you train with dataset A and try to classify with dataset B, you should use A's getCellNames method to get back the names of your predicted classes.
+    WARNING!: The subclasses below all keep track of their own int -> cell type mappings (i.e., for RaviAML, 0 might be BM_CMP_BM_NBM07, but for Broad, 0 is BASO), so if you train with dataset A and try to classify with dataset B, you should use A's getCellNames method to get back the names of your predicted classes.
 """
 class GSE_H60(Loader):
     def __init__(self):
@@ -170,7 +170,7 @@ class Data(Loader):
         self.cellNameToCellType = {'DENDa2': 7, 'NKa2': 23, 'DENDa1': 6, 'TCEL1': 28, 'BCELLa2': 2, 'BCELLa3': 3, 'TCEL3': 30, 'ERY3-5': 11, 'ERY2': 10, 'TCEL4': 31, 'BCELLa4': 4, 'ERY1': 9, 'GRAN3': 15, 'GRAN2': 14, 'GRAN1': 13, 'BCELLa1': 1, 'NKa1': 22, 'TCEL7': 33, 'CMP': 5, 'PRE_BCELL2': 26, 'PRE_BCELL3': 27, 'EOS2': 8, 'HSC2': 17, 'MEGA': 18, 'HSC1': 16, 'TCEL6': 32, 'BASO': 0, 'GMP': 12, 'TCEL2': 29, 'TCEL8': 34, 'MONO2': 21, 'NKa3': 24, 'MONO1': 20, 'MEP': 19, 'NKa4': 25}
         file = open(Loader.FILE_LOC + self.arrayToTypeFile)
         for line in file:
-            lineParts = line.rstrip('\n').split('\t')
+            lineParts = line.rstrip('\n').split('\t').strip()
             cellName = lineParts[self.cellTypeIdx]
             if cellName in ['ERY3','ERY4','ERY5']:
                 cellName = 'ERY3-5'
@@ -178,6 +178,35 @@ class Data(Loader):
                 cellName = 'MEGA'
             self.arrayToCellType[lineParts[0]]=self.cellNameToCellType[cellName]
         file.close()
+class VagueClasses(Data):
+    def _make_arrayToCellType(self):
+        self.cellNameToCellType = {'EARLY':0,'ERY':1,'MEGA':2,'GRAN/MONO':3,'DEND':4,'B':5,'NK':6,'T':7}
+        file = open(Loader.FILE_LOC + self.arrayToTypeFile)
+        for line in file:
+            lineParts = line.rstrip('\n').split('\t')
+            cellName = lineParts[self.cellTypeIdx]
+            print(cellName)
+            if cellName in ['CMP','GMP','MEP','HSC1','HSC2']:
+                cellName = 'EARLY'
+            elif cellName in ['ERY1','ERY2','ERY3','ERY4','ERY5']:
+                cellName = 'ERY'
+            elif cellName in ['MEGA1','MEGA2']:
+                cellName = 'MEGA'
+            elif cellName in ['GRAN1','GRAN2','GRAN3','MONO1','MONO2','EOS2','BASO']:
+                cellName = 'GRAN/MONO'
+            elif cellName in ['DENDa1','DENDa2']:
+                cellName = 'DEND'
+            elif cellName in ['PRE_BCELL1','PRE_BCELL2','PRE_BCELL3','BCELLa1','BCELLa2','BCELLa3','BCELLa4']:
+                cellName = 'B'
+            elif cellName in ['NKa1','NKa2','NKa3','NKa4']:
+                cellName = 'NK'
+            elif cellName in ['TCEL1','TCEL2','TCEL3','TCEL4','TCEL5','TCEL6','TCEL7','TCEL8']:
+                cellName = 'T'
+            else:
+                raise Exception("I give up!")
+            self.arrayToCellType[lineParts[0]]=self.cellNameToCellType[cellName]
+        file.close()
+
 
 def testBroad():
     data = Data()

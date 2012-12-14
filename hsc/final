@@ -70,6 +70,17 @@ We normalized the data to have mean 0 and standard deviation 1. At least one gen
 
 \subsection{Results \& Discussion}
 We found out that this problem is very easy to solve. Naive Bayes, which operates under the very unrealistic assumption that the genes are independently expressed, got on average 98\% accuracy, 99\% precision and 99\% recall when tested with 75\% - 25\% cross validation. SVM with random feature selection gave on average 91\% accuracy, 91\% precision and 100\% recall. This means that any set of genes gives good predictions, which is on par with recent literature \cite{venet}, which in turns means that either this method cannot be used to find gene signatures or that almost all genes are significantly correlated with breast cancer.
+\begin{tabular}{ | l | l | l | }
+ \hline
+    Method & Precision & Recall\\
+  \hline 
+Naive Bayes & 99\% & 99\% \\  \hline 
+Logistic Regression with L1 & 99\% & 100\% \\  \hline 
+SVM with Chi2 & 99\% & 100\% \\  \hline 
+Backwards Selection & 99\% & 100\% \\  \hline 
+SVM with Random 50 Genes & 91\% & 100\% \\  \hline 
+  \hline
+\end{tabular}
 
 
 \section{Multiclass}
